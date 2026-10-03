@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">APK Signer Pro</string>
+
+    <string name="main_activity_permission_notifications">Notification permission required for signing alerts.</string>
+
+    <string name="nav_container_home">Home</string>
+    <string name="nav_container_history">History</string>
+    <string name="nav_container_settings">Settings</string>
+
+    <string name="home_screen_title">APK Signer</string>
+    <string name="home_screen_select_file">Select APK / APKS / XAPK</string>
+    <string name="home_screen_tab_user_apps">User Apps</string>
+    <string name="home_screen_tab_system_apps">System Apps</string>
+    <string name="home_screen_search_hint">Search installed apps...</string>
+    <string name="home_screen_empty_search">No matching applications found</string>
+    <string name="home_screen_action_dialog_title">App Options</string>
+    <string name="home_screen_action_sign">Sign Application</string>
+    <string name="home_screen_action_extract">Backup APK</string>
+    <string name="home_screen_action_share">Share APK</string>
+    <string name="home_screen_extracted_success">Backup saved successfully</string>
+    <string name="home_screen_extracted_fail">Failed to backup application</string>
+
+    <string name="app_details_screen_title">Sign Application</string>
+    <string name="app_details_screen_detected_sig">Detected Signature</string>
+    <string name="app_details_screen_unsigned">Unsigned</string>
+    <string name="app_details_screen_config">Signing Configuration</string>
+    <string name="app_details_screen_key_default">Built-in Debug Key</string>
+    <string name="app_details_screen_key_default_desc">Default Android Studio Debug Key (androiddebugkey)</string>
+    <string name="app_details_screen_change">Change</string>
+    <string name="app_details_screen_schemes">Signature Schemes</string>
+    <string name="app_details_screen_v1">v1</string>
+    <string name="app_details_screen_v2">v2</string>
+    <string name="app_details_screen_v3">v3</string>
+    <string name="app_details_screen_v4">v4</string>
+    <string name="app_details_screen_sign_now">Sign Package Now</string>
+    <string name="app_details_screen_signing">Signing in progress...</string>
+    <string name="app_details_screen_cancel">Cancel</string>
+    <string name="app_details_screen_success_title">Signing Finished Successfully</string>
+    <string name="app_details_screen_success_msg">Saved to:\n%1$s</string>
+    <string name="app_details_screen_install">Install APK</string>
+    <string name="app_details_screen_share">Share File</string>
+    <string name="app_details_screen_error_title">Signing Task Failed</string>
+    <string name="app_details_screen_error_subtitle">An error occurred during signing. Tap below to inspect details.</string>
+    <string name="app_details_screen_view_error_log">View Error Log</string>
+    <string name="app_details_screen_retry">Retry Signing</string>
+    <string name="app_details_screen_live_logs">Live Execution Logs</string>
+    <string name="app_details_screen_copy_logs">Copy Logs</string>
+    <string name="app_details_screen_logs_copied">Logs copied to clipboard</string>
+    <string name="app_details_screen_add_custom_key">Add Custom Keystore</string>
+    <string name="app_details_screen_delete_key">Delete Key</string>
+    <string name="app_details_screen_back_desc">Navigate back</string>
+
+    <string name="history_screen_title">Signing History</string>
+    <string name="history_screen_search_hint">Search history...</string>
+    <string name="history_screen_empty_title">No Signed Files</string>
+    <string name="history_screen_empty_subtitle">Signed files will automatically appear here for quick access.</string>
+    <string name="history_screen_action_install">Install APK</string>
+    <string name="history_screen_action_share">Share</string>
+    <string name="history_screen_action_copy_path">Copy Path</string>
+    <string name="history_screen_path_copied">Path copied to clipboard</string>
+    <string name="history_screen_action_delete">Delete Record</string>
+    <string name="history_screen_delete_dialog_title">Delete History Entry</string>
+    <string name="history_screen_delete_dialog_msg">Remove entry from signing history list?</string>
+    <string name="history_screen_delete_file_checkbox">Also delete signed file from device storage</string>
+    <string name="history_screen_confirm_delete">Delete</string>
+    <string name="history_screen_cancel">Cancel</string>
+    <string name="history_screen_file_missing">File Missing</string>
+    <string name="history_screen_installed_badge">Installed</string>
+
+    <string name="settings_screen_title">Settings</string>
+    <string name="settings_screen_cat_appearance">Appearance</string>
+    <string name="settings_screen_theme_mode">Theme Mode</string>
+    <string name="settings_screen_theme_system">System</string>
+    <string name="settings_screen_theme_light">Light</string>
+    <string name="settings_screen_theme_dark">Dark</string>
+    <string name="settings_screen_dynamic_color">Dynamic Color</string>
+    <string name="settings_screen_dynamic_color_sub">Material You wallpaper accent colors</string>
+
+    <string name="settings_screen_cat_key_mgmt">Key Management</string>
+    <string name="settings_screen_active_key">Active Signing Key</string>
+    <string name="settings_screen_key_default">Built-in Debug Key</string>
+    <string name="settings_screen_key_manage">Manage Custom Keys</string>
+
+    <string name="settings_screen_cat_schemes">Default Signature Schemes</string>
+    <string name="settings_screen_v1_title">v1 Scheme</string>
+    <string name="settings_screen_v1_sub">Compatible with Android 4.4 and lower</string>
+    <string name="settings_screen_v2_title">v2 Scheme</string>
+    <string name="settings_screen_v2_sub">Required for Android 7.0 and higher</string>
+    <string name="settings_screen_v3_title">v3 Scheme</string>
+    <string name="settings_screen_v3_sub">Key rotation support for Android 9.0 and higher</string>
+    <string name="settings_screen_v4_title">v4 Scheme</string>
+    <string name="settings_screen_v4_sub">Separate streaming signature file for Android 11.0 and higher</string>
+
+    <string name="settings_screen_cat_about">About App</string>
+    <string name="settings_screen_about_title">APK Signer</string>
+    <string name="settings_screen_about_sub">Modern Material 3 Expressive APK signing tool</string>
+    <string name="settings_screen_btn_buy_coffee">Buy Me a Coffee</string>
+    <string name="settings_screen_btn_telegram">Telegram</string>
+    <string name="settings_screen_btn_github_repo">GitHub Repository</string>
+
+    <string name="keystore_sheet_title">Key Management</string>
+    <string name="keystore_sheet_subtitle">Select an active signing key or import custom certificates</string>
+    <string name="keystore_sheet_debug_meta">Built-in • androiddebugkey • RSA 2048</string>
+    <string name="keystore_sheet_btn_add">Import Keystore File</string>
+
+    <string name="keystore_password_dialog_title">Import Keystore</string>
+    <string name="keystore_password_dialog_path_label">Keystore File</string>
+    <string name="keystore_password_dialog_password_label">Keystore Password</string>
+    <string name="keystore_password_dialog_custom_title_label">Title (Optional)</string>
+    <string name="keystore_password_dialog_alias_label">Key Alias</string>
+    <string name="keystore_password_dialog_select_file">Browse File</string>
+    <string name="keystore_password_dialog_verify">Verify Keystore</string>
+    <string name="keystore_password_dialog_add">Add Keystore</string>
+    <string name="keystore_password_dialog_invalid_pw">Failed to load keystore. Check password or format.</string>
+    <string name="keystore_password_dialog_cancel">Cancel</string>
+    <string name="keystore_password_dialog_info_format">Format</string>
+    <string name="keystore_password_dialog_info_alias">Alias</string>
+    <string name="keystore_password_dialog_info_algorithm">Algorithm</string>
+    <string name="keystore_password_dialog_info_validity">Validity</string>
+    <string name="keystore_password_dialog_info_subject">Subject</string>
+    <string name="keystore_password_dialog_info_fingerprint">SHA-256 Fingerprint</string>
+    <string name="keystore_password_dialog_verified_success">Keystore verified successfully</string>
+    <string name="keystore_password_dialog_no_file">Please select a keystore file first</string>
+    <string name="keystore_password_dialog_no_pw">Please enter keystore password</string>
+
+    <string name="error_logger_dialog_title">Signing Execution Log</string>
+    <string name="error_logger_dialog_copy">Copy Log</string>
+    <string name="error_logger_dialog_dismiss">Dismiss</string>
+    <string name="error_logger_dialog_copied">Error log copied to clipboard</string>
+</resources>
