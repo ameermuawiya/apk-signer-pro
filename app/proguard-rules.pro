@@ -11,6 +11,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-dontwarn javax.lang.model.element.Modifier
 -dontwarn org.xmlpull.v1.**
 -dontwarn org.kxml2.io.**
 -dontwarn android.content.res.**
