@@ -1,15 +1,15 @@
-# APK Signer (Material 3 Expressive)
+# APK Signer Pro (Material 3 Expressive)
 
 [![Platform](https://img.shields.io/badge/Platform-Android-3DDC84.svg?style=flat&logo=android)](https://www.android.com/)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.4.20-7F52FF.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 [![Compose](https://img.shields.io/badge/Jetpack%20Compose-M3%20Expressive-4285F4.svg?style=flat&logo=jetpackcompose)](https://developer.android.com/jetpack/compose)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=flat)](LICENSE)
 
-An open-source, modern Android application designed for signing, verifying, extracting, and managing APK, APKS, and XAPK package files on Android devices with pure Kotlin and Jetpack Compose.
+An open-source, modern Android application for signing, verifying, extracting, backing up, and managing APK, APKS, and XAPK package files directly on Android devices using pure Kotlin and Jetpack Compose.
 
 ---
 
-## 📸 Screenshots & Architecture Previews
+## 📸 Screenshots
 
 <table>
   <tr>
@@ -34,36 +34,68 @@ An open-source, modern Android application designed for signing, verifying, extr
 
 ## ✨ Key Features
 
-### 🔐 Multi-Scheme Signing & Integrity Verification
-- **v1 Scheme (JAR signing)**: Backward compatible with legacy Android versions (Android 4.4 and lower).
-- **v2 Scheme (APK Signature Scheme v2)**: Full-file binary integrity verification (Android 7.0+).
-- **v3 Scheme (APK Signature Scheme v3)**: Key rotation and cryptographic lineage support (Android 9.0+).
-- **v4 Scheme (APK Signature Scheme v4)**: Streaming signature files (`.apk.idsig`) for fast adb/incremental installations (Android 11.0+).
-- **Automated 16KB & 4KB Page Alignment**: Guarantees uncompressed native `.so` libraries and `resources.arsc` are aligned to 16384-byte (16KB Android 15+ standard) and 4-byte boundaries for zero runtime crashes.
+- **v1 APK Signing**: Legacy JAR-based APK signing for older Android versions.
+- **v2 APK Signing & Verification**: Full-file binary integrity protection for Android 7.0+.
+- **v3 APK Signing & Verification**: Key rotation and cryptographic lineage support for Android 9.0+.
+- **v4 APK Signing**: Streaming signature generation with `.apk.idsig` support for Android 11.0+.
+- **16KB & 4KB Page Alignment**: Automatically aligns native `.so` libraries and `resources.arsc` for modern Android compatibility.
+- **Multi-Format Keystores**: Supports `JKS`, `PKCS12`, `BKS`, `BKS-V1`, `UBER`, and `BCFKS`.
+- **Built-in Debug Key**: Sign APKs instantly using the standard Android Studio debug credentials.
+- **Certificate Inspection**: View certificate algorithm, validity period, subject, issuer, and SHA-256 fingerprint before saving a keystore.
+- **Persistent Credentials**: Associates passwords with saved key records for faster signing without repeated prompts.
+- **APK Backup & Extraction**: Back up and extract APKs from installed user and system applications.
+- **Split APK Support**: Handle split APK bundles and `.apks` packages.
+- **APK & Package Management**: Install, share, copy paths, or remove generated files directly from the application.
+- **APK, APKS & XAPK Support**: Designed to work with common Android package formats.
+- **Signing History**: Store and manage previous signing operations locally.
+- **Search & Filtering**: Quickly find records across signing history and installed applications.
+- **Reactive Local Storage**: SQLite persistence with Kotlin Flow for responsive data updates.
+- **Organized File Storage**: Automatically stores backups and signed packages in dedicated directories under `Downloads/APKSigner/`.
+- **Secure Installation & Sharing**: Uses Android's `FileProvider` and system sharesheet for secure file handling.
 
-### 🔑 Advanced Keystore & Certificate Inspection
-- **Multi-Format Keystore Engine**: Full support for `JKS`, `PKCS12`, `BKS`, `BKS-V1`, `UBER`, and `BCFKS` key formats.
-- **Built-in Debug Key**: Instant signing with standard Android Studio debug credentials (`androiddebugkey`).
-- **Interactive Verification Dialog**: Pre-verifies keystores before saving, displaying certificate algorithm, validity period, subject DN, issuer, and SHA-256 fingerprints in read-only inspector fields.
-- **Persistent Credential Association**: Stores passwords securely per key record so signing works seamlessly with one tap without repetitive prompts.
-- **Non-Disruptive Keystore Selector**: Bottom sheet allows smooth key switching without accidental dismissals.
+---
 
-### 📦 Application Backup & Split APK Handling
-- **Backup & Extraction**: One-tap backup of single APKs and split APK bundles (`.apks`) from user and system apps.
-- **Dedicated Directory Organization**: Automatically organizes output into `Downloads/APKSigner/Backup` and `Downloads/APKSigner/Signed`.
-- **System Sharing & Installation**: Integrated Android sharesheet and direct package installation via secure `FileProvider`.
+## 🎨 Material 3 Expressive UI
 
-### ⚡ Reactive History & Local Persistence
-- **High-Performance SQLite Persistence**: Reactive Flow updates with zero main-thread blocking.
-- **Search & Filter**: Real-time filtering across signing history and installed apps.
-- **File Management**: Quick options to copy file path, install, share, or purge records and files from storage.
+- **Material 3 Expressive**: Modern Android interface built entirely with Jetpack Compose.
+- **Dynamic Colors**: Automatically adapts to the system wallpaper color palette.
+- **Light & Dark Themes**: Full support for system-based Light and Dark themes.
+- **Expressive Card Geometry**: Modern grouped cards with dynamic corner radii.
+- **Clipped Ripple Effects**: Touch feedback remains properly contained within rounded components.
+- **Collapsing Top App Bars**: Smooth nested scrolling across primary screens.
+- **Live Terminal Logs**: Colorized signing and execution logs with step indicators.
+- **One-Tap Log Copying**: Quickly copy terminal output to the clipboard.
+- **Responsive Layouts**: Designed for a clean and consistent experience across Android devices.
 
-### 🎨 Material 3 Expressive Design
-- **Grouped Card Geometry**: Smooth dynamic corner radii matching modern Material 3 guidelines.
-- **Clipped Ripple Effects**: Contained touch ripples strictly respecting rounded corners.
-- **Dynamic Color (Material You)**: Automatic wallpaper accent palette adaptation with Light & Dark themes.
-- **Collapsing Top App Bars**: Smooth nested scroll behavior across all primary screens.
-- **Live Terminal Log Viewer**: Colorized execution logs with step indicators and one-tap clipboard copying.
+---
+
+## ☕ Support the Project
+
+If APK Signer Pro is useful to you, you can support its development by buying me a coffee.
+
+<a href="https://www.patreon.com/ameermuawiyapk/posts/buy-me-coffee-16891048">
+  <img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-FF424D?style=for-the-badge&logo=patreon&logoColor=white" alt="Buy Me a Coffee"/>
+</a>
+
+You can also connect with me on Telegram:
+
+<a href="https://t.me/itx_muawiya">
+  <img src="https://img.shields.io/badge/Telegram-@itx__muawiya-26A5E4?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram"/>
+</a>
+
+---
+
+## 🙏 Acknowledgements
+
+Special thanks to the **ACS Lite team** for making Android development possible directly on mobile. This project was developed using their latest Android development environment, enabling the entire application to be built without a computer.
+
+<a href="https://github.com/AndroidCSIDE/ACSIDE">
+  <img src="https://img.shields.io/badge/ACS%20Lite-GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="ACS Lite GitHub"/>
+</a>
+
+<a href="https://t.me/androidcodestudio">
+  <img src="https://img.shields.io/badge/ACS%20Lite-Telegram-26A5E4?style=for-the-badge&logo=telegram&logoColor=white" alt="ACS Lite Telegram"/>
+</a>
 
 ---
 
