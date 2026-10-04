@@ -60,8 +60,6 @@ An open-source, modern Android application for signing, verifying, extracting, b
 - **Material 3 Expressive**: Modern Android interface built entirely with Jetpack Compose.
 - **Dynamic Colors**: Automatically adapts to the system wallpaper color palette.
 - **Light & Dark Themes**: Full support for system-based Light and Dark themes.
-- **Expressive Card Geometry**: Modern grouped cards with dynamic corner radii.
-- **Clipped Ripple Effects**: Touch feedback remains properly contained within rounded components.
 - **Collapsing Top App Bars**: Smooth nested scrolling across primary screens.
 - **Live Terminal Logs**: Colorized signing and execution logs with step indicators.
 - **One-Tap Log Copying**: Quickly copy terminal output to the clipboard.
