@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="app/main/src/ic_launcher-playstore.png" width="140" alt="APK Signer Pro Icon"/>
+<img src="app/src/main/ic_launcher-playstore.png" width="140" alt="APK Signer Pro Icon"/>
 
 # APK Signer Pro
 
