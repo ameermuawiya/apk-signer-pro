@@ -13,43 +13,43 @@
     <string name="home_screen_tab_user_apps">User Apps</string>
     <string name="home_screen_tab_system_apps">System Apps</string>
     <string name="home_screen_search_hint">Search installed apps...</string>
-    <string name="home_screen_empty_search">No matching applications found</string>
+    <string name="home_screen_empty_title">No Applications Found</string>
+    <string name="home_screen_empty_subtitle">No applications match your current search or category tab.</string>
     <string name="home_screen_action_dialog_title">App Options</string>
     <string name="home_screen_action_sign">Sign Application</string>
     <string name="home_screen_action_extract">Backup APK</string>
     <string name="home_screen_action_share">Share APK</string>
-    <string name="home_screen_extracted_success">Backup saved successfully</string>
+    <string name="home_screen_extracted_success">Backup saved successfully:\n%1$s</string>
     <string name="home_screen_extracted_fail">Failed to backup application</string>
 
-    <string name="app_details_screen_title">Sign Application</string>
-    <string name="app_details_screen_detected_sig">Detected Signature</string>
-    <string name="app_details_screen_unsigned">Unsigned</string>
-    <string name="app_details_screen_config">Signing Configuration</string>
-    <string name="app_details_screen_key_default">Built-in Debug Key</string>
-    <string name="app_details_screen_key_default_desc">Default Android Studio Debug Key (androiddebugkey)</string>
-    <string name="app_details_screen_change">Change</string>
-    <string name="app_details_screen_schemes">Signature Schemes</string>
-    <string name="app_details_screen_v1">v1</string>
-    <string name="app_details_screen_v2">v2</string>
-    <string name="app_details_screen_v3">v3</string>
-    <string name="app_details_screen_v4">v4</string>
-    <string name="app_details_screen_sign_now">Sign Package Now</string>
-    <string name="app_details_screen_signing">Signing in progress...</string>
-    <string name="app_details_screen_cancel">Cancel</string>
-    <string name="app_details_screen_success_title">Signing Finished Successfully</string>
-    <string name="app_details_screen_success_msg">Saved to:\n%1$s</string>
-    <string name="app_details_screen_install">Install APK</string>
-    <string name="app_details_screen_share">Share File</string>
-    <string name="app_details_screen_error_title">Signing Task Failed</string>
-    <string name="app_details_screen_error_subtitle">An error occurred during signing. Tap below to inspect details.</string>
-    <string name="app_details_screen_view_error_log">View Error Log</string>
-    <string name="app_details_screen_retry">Retry Signing</string>
-    <string name="app_details_screen_live_logs">Live Execution Logs</string>
-    <string name="app_details_screen_copy_logs">Copy Logs</string>
-    <string name="app_details_screen_logs_copied">Logs copied to clipboard</string>
-    <string name="app_details_screen_add_custom_key">Add Custom Keystore</string>
-    <string name="app_details_screen_delete_key">Delete Key</string>
-    <string name="app_details_screen_back_desc">Navigate back</string>
+    <string name="sign_package_screen_title">Sign Application</string>
+    <string name="sign_package_screen_detected_sig">Detected Signature</string>
+    <string name="sign_package_screen_unsigned">Unsigned</string>
+    <string name="sign_package_screen_config">Signing Configuration</string>
+    <string name="sign_package_screen_key_default">Built-in Debug Key</string>
+    <string name="sign_package_screen_key_default_desc">Alias: androiddebugkey</string>
+    <string name="sign_package_screen_change">Change</string>
+    <string name="sign_package_screen_schemes">Signature Schemes</string>
+    <string name="sign_package_screen_v1">v1</string>
+    <string name="sign_package_screen_v2">v2</string>
+    <string name="sign_package_screen_v3">v3</string>
+    <string name="sign_package_screen_v4">v4</string>
+    <string name="sign_package_screen_sign_now">Sign Package Now</string>
+    <string name="sign_package_screen_cancel">Cancel</string>
+    <string name="sign_package_screen_success_title">Signing Finished Successfully</string>
+    <string name="sign_package_screen_success_msg">Saved to:\n%1$s</string>
+    <string name="sign_package_screen_install">Install APK</string>
+    <string name="sign_package_screen_share">Share File</string>
+    <string name="sign_package_screen_error_title">Signing Task Failed</string>
+    <string name="sign_package_screen_error_subtitle">An error occurred during signing. Tap below to inspect details.</string>
+    <string name="sign_package_screen_view_error_log">View Error Log</string>
+    <string name="sign_package_screen_retry">Retry Signing</string>
+    <string name="sign_package_screen_live_logs">Live Execution Logs</string>
+    <string name="sign_package_screen_copy_logs">Copy Logs</string>
+    <string name="sign_package_screen_logs_copied">Logs copied to clipboard</string>
+    <string name="sign_package_screen_add_custom_key">Add Custom Keystore</string>
+    <string name="sign_package_screen_delete_key">Delete Key</string>
+    <string name="sign_package_screen_back_desc">Navigate back</string>
 
     <string name="history_screen_title">Signing History</string>
     <string name="history_screen_search_hint">Search history...</string>
@@ -67,6 +67,7 @@
     <string name="history_screen_cancel">Cancel</string>
     <string name="history_screen_file_missing">File Missing</string>
     <string name="history_screen_installed_badge">Installed</string>
+    <string name="history_screen_key_chip">Key: %1$s</string>
 
     <string name="settings_screen_title">Settings</string>
     <string name="settings_screen_cat_appearance">Appearance</string>
@@ -91,6 +92,13 @@
     <string name="settings_screen_v3_sub">Key rotation support for Android 9.0 and higher</string>
     <string name="settings_screen_v4_title">v4 Scheme</string>
     <string name="settings_screen_v4_sub">Separate streaming signature file for Android 11.0 and higher</string>
+
+    <string name="settings_screen_cat_storage">Storage &amp; Working Directory</string>
+    <string name="settings_screen_working_dir_title">Working Directory</string>
+    <string name="settings_screen_working_dir_desc">Tap to select a custom working directory location</string>
+    <string name="settings_screen_working_dir_reset_title">Reset Working Directory</string>
+    <string name="settings_screen_working_dir_reset_sub">Restore default Download/APK Signer Pro directory</string>
+    <string name="settings_screen_working_dir_custom_set">Working directory updated</string>
 
     <string name="settings_screen_cat_about">About App</string>
     <string name="settings_screen_about_title">APK Signer</string>
@@ -123,9 +131,23 @@
     <string name="keystore_password_dialog_verified_success">Keystore verified successfully</string>
     <string name="keystore_password_dialog_no_file">Please select a keystore file first</string>
     <string name="keystore_password_dialog_no_pw">Please enter keystore password</string>
+    <string name="keystore_password_dialog_error_label">Error Details</string>
+    <string name="keystore_password_dialog_copy_error">Copy Error</string>
+    <string name="keystore_password_dialog_error_copied">Error message copied to clipboard</string>
 
     <string name="error_logger_dialog_title">Signing Execution Log</string>
     <string name="error_logger_dialog_copy">Copy Log</string>
     <string name="error_logger_dialog_dismiss">Dismiss</string>
     <string name="error_logger_dialog_copied">Error log copied to clipboard</string>
+
+    <string name="installer_helper_install_success">Installation initiated successfully</string>
+    <string name="installer_helper_install_error">Installation failed: %1$s</string>
+    <string name="installer_helper_installing_split">Installing split package bundle...</string>
+    <string name="installer_helper_file_not_found">Target file not found on device storage</string>
+    <string name="installer_helper_permission_needed">Install permission required to install applications</string>
+
+    <string name="app_update_sheet_title">New Update Available</string>
+    <string name="app_update_sheet_notes">What\'s New</string>
+    <string name="app_update_sheet_btn_later">Later</string>
+    <string name="app_update_sheet_btn_download">Download Update</string>
 </resources>

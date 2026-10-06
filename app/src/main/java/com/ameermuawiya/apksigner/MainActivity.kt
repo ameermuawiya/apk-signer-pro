@@ -1,7 +1,6 @@
 package com.ameermuawiya.apksigner
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -9,12 +8,12 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import com.ameermuawiya.apksigner.ui.navigation.NavContainer
 import com.ameermuawiya.apksigner.ui.theme.ApkSignerTheme
 import com.ameermuawiya.apksigner.ui.viewmodel.MainViewModel
@@ -31,7 +30,7 @@ class MainActivity : ComponentActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         requestAppPermissions()
         handleIncomingIntent(intent)
@@ -63,6 +62,14 @@ class MainActivity : ComponentActivity() {
      */
     private fun handleIncomingIntent(intent: Intent?) {
         if (intent == null) return
+
+        val installPath = intent.getStringExtra("EXTRA_INSTALL_PATH")
+        if (!installPath.isNullOrBlank()) {
+            viewModel.installSignedApk(installPath)
+            intent.removeExtra("EXTRA_INSTALL_PATH")
+            return
+        }
+
         val action = intent.action
         if (Intent.ACTION_SEND == action) {
             val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

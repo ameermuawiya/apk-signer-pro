@@ -1,28 +1,35 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
-
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
 -dontwarn javax.lang.model.element.Modifier
 -dontwarn org.xmlpull.v1.**
 -dontwarn org.kxml2.io.**
 -dontwarn android.content.res.**
 -dontwarn org.**
--keep class * {
-    *;
-}
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# BouncyCastle Cryptographic Providers & JCA/JCE SPIs
+-keep class org.bouncycastle.** { *; }
+-dontwarn org.bouncycastle.**
+
+# Keystore classes & custom SPIs
+-keep class com.ameermuawiya.apksigner.data.keystore.** { *; }
+
+# APK Signature Engine and Verifier
+-keep class com.android.apksig.** { *; }
+
+# Apache Commons Compress
+-keep class org.apache.commons.compress.** { *; }
+
+# Models and Database
+-keep class com.ameermuawiya.apksigner.data.model.** { *; }
+-keep class com.ameermuawiya.apksigner.data.db.** { *; }
+-keep class com.ameermuawiya.apksigner.data.preferences.** { *; }
+
+# Android Architecture Components & Compose
+-keepclassmembers class * extends androidx.lifecycle.ViewModel {
+    <init>(...);
+}
+
+# Remove unused logging in release builds
+-assumenosideeffects class android.util.Log {
+    public static boolean isLoggable(java.lang.String, int);
+    public static int v(...);
+    public static int d(...);
+}

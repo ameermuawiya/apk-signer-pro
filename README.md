@@ -57,13 +57,16 @@ An open-source, modern Android application for signing, verifying, extracting, b
 
 ## 🎨 Material 3 Expressive UI
 
-- **Material 3 Expressive**: Modern Android interface built entirely with Jetpack Compose.
+- **MaterialExpressiveTheme**: Modern Android interface built with official Material 3 Expressive theming.
+- **Material 3 Expressive Loading Indicator**: Authentic shape-morphing loading indicator centered across all app workflows.
+- **Expressive Pull-to-Refresh**: Swipe-to-refresh with floating expressive loading indicator and natural spring physics.
 - **Dynamic Colors**: Automatically adapts to the system wallpaper color palette.
 - **Light & Dark Themes**: Full support for system-based Light and Dark themes.
 - **Collapsing Top App Bars**: Smooth nested scrolling across primary screens.
-- **Live Terminal Logs**: Colorized signing and execution logs with step indicators.
+- **Live Logs**: Colorized signing and execution logs with step indicators.
 - **One-Tap Log Copying**: Quickly copy terminal output to the clipboard.
-- **Responsive Layouts**: Designed for a clean and consistent experience across Android devices.
+- **Consistent Empty States**: Polished empty state designs with circular themed badges and typography.
+- **Multi-language Support**: Localized into English, Russian, Spanish, Portuguese, Arabic, Simplified Chinese, French, and German.
 
 ---
 

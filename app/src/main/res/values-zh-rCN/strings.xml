@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">APK Signer Pro</string>
+
+    <string name="main_activity_permission_notifications">需要通知权限以接收签名结果提醒。</string>
+
+    <string name="nav_container_home">首页</string>
+    <string name="nav_container_history">历史</string>
+    <string name="nav_container_settings">设置</string>
+
+    <string name="home_screen_title">APK 签名工具</string>
+    <string name="home_screen_select_file">选择 APK / APKS / XAPK 文件</string>
+    <string name="home_screen_tab_user_apps">用户应用</string>
+    <string name="home_screen_tab_system_apps">系统应用</string>
+    <string name="home_screen_search_hint">搜索已安装应用...</string>
+    <string name="home_screen_empty_title">未找到应用</string>
+    <string name="home_screen_empty_subtitle">没有找到匹配当前搜索或标签页的应用。</string>
+    <string name="home_screen_action_dialog_title">应用选项</string>
+    <string name="home_screen_action_sign">签名应用</string>
+    <string name="home_screen_action_extract">备份 APK</string>
+    <string name="home_screen_action_share">分享 APK</string>
+    <string name="home_screen_extracted_success">备份成功保存至：\n%1$s</string>
+    <string name="home_screen_extracted_fail">应用备份失败</string>
+
+    <string name="sign_package_screen_title">签名应用</string>
+    <string name="sign_package_screen_detected_sig">检测到的签名</string>
+    <string name="sign_package_screen_unsigned">未签名</string>
+    <string name="sign_package_screen_config">签名配置</string>
+    <string name="sign_package_screen_key_default">内置调试密钥</string>
+    <string name="sign_package_screen_key_default_desc">Alias: androiddebugkey</string>
+    <string name="sign_package_screen_change">更改</string>
+    <string name="sign_package_screen_schemes">签名方案</string>
+    <string name="sign_package_screen_v1">v1</string>
+    <string name="sign_package_screen_v2">v2</string>
+    <string name="sign_package_screen_v3">v3</string>
+    <string name="sign_package_screen_v4">v4</string>
+    <string name="sign_package_screen_sign_now">立即签名软件包</string>
+    <string name="sign_package_screen_cancel">取消</string>
+    <string name="sign_package_screen_success_title">签名成功完成</string>
+    <string name="sign_package_screen_success_msg">已保存至：\n%1$s</string>
+    <string name="sign_package_screen_install">安装 APK</string>
+    <string name="sign_package_screen_share">分享文件</string>
+    <string name="sign_package_screen_error_title">签名任务失败</string>
+    <string name="sign_package_screen_error_subtitle">签名过程中发生错误。点击下方查看详情。</string>
+    <string name="sign_package_screen_view_error_log">查看错误日志</string>
+    <string name="sign_package_screen_retry">重试签名</string>
+    <string name="sign_package_screen_live_logs">实时执行日志</string>
+    <string name="sign_package_screen_copy_logs">复制日志</string>
+    <string name="sign_package_screen_logs_copied">日志已复制到剪贴板</string>
+    <string name="sign_package_screen_add_custom_key">添加自定义密钥库</string>
+    <string name="sign_package_screen_delete_key">删除密钥</string>
+    <string name="sign_package_screen_back_desc">返回</string>
+
+    <string name="history_screen_title">签名历史</string>
+    <string name="history_screen_search_hint">搜索历史记录...</string>
+    <string name="history_screen_empty_title">暂无签名文件</string>
+    <string name="history_screen_empty_subtitle">已签名的文件将自动显示在这里以便快速访问。</string>
+    <string name="history_screen_action_install">安装 APK</string>
+    <string name="history_screen_action_share">分享</string>
+    <string name="history_screen_action_copy_path">复制路径</string>
+    <string name="history_screen_path_copied">路径已复制到剪贴板</string>
+    <string name="history_screen_action_delete">删除记录</string>
+    <string name="history_screen_delete_dialog_title">删除历史记录</string>
+    <string name="history_screen_delete_dialog_msg">确定要从签名历史中移除此条目吗？</string>
+    <string name="history_screen_delete_file_checkbox">同时从设备存储中删除已签名文件</string>
+    <string name="history_screen_confirm_delete">删除</string>
+    <string name="history_screen_cancel">取消</string>
+    <string name="history_screen_file_missing">文件不存在</string>
+    <string name="history_screen_installed_badge">已安装</string>
+    <string name="history_screen_key_chip">密钥: %1$s</string>
+
+    <string name="settings_screen_title">设置</string>
+    <string name="settings_screen_cat_appearance">外观</string>
+    <string name="settings_screen_theme_mode">主题模式</string>
+    <string name="settings_screen_theme_system">跟随系统</string>
+    <string name="settings_screen_theme_light">浅色</string>
+    <string name="settings_screen_theme_dark">深色</string>
+    <string name="settings_screen_dynamic_color">动态取色</string>
+    <string name="settings_screen_dynamic_color_sub">基于壁纸的 Material You 强调色</string>
+
+    <string name="settings_screen_cat_key_mgmt">密钥管理</string>
+    <string name="settings_screen_active_key">当前签名密钥</string>
+    <string name="settings_screen_key_default">内置调试密钥</string>
+    <string name="settings_screen_key_manage">管理自定义密钥</string>
+
+    <string name="settings_screen_cat_schemes">默认签名方案</string>
+    <string name="settings_screen_v1_title">v1 方案</string>
+    <string name="settings_screen_v1_sub">兼容 Android 4.4 及更低版本</string>
+    <string name="settings_screen_v2_title">v2 方案</string>
+    <string name="settings_screen_v2_sub">Android 7.0 及更高版本必需</string>
+    <string name="settings_screen_v3_title">v3 方案</string>
+    <string name="settings_screen_v3_sub">支持 Android 9.0 及更高版本的密钥轮换</string>
+    <string name="settings_screen_v4_title">v4 方案</string>
+    <string name="settings_screen_v4_sub">适用于 Android 11.0 及更高版本的独立流式签名文件</string>
+
+    <string name="settings_screen_cat_storage">存储与工作目录</string>
+    <string name="settings_screen_working_dir_title">工作目录</string>
+    <string name="settings_screen_working_dir_desc">点击选择自定义工作目录位置</string>
+    <string name="settings_screen_working_dir_reset_title">重置工作目录</string>
+    <string name="settings_screen_working_dir_reset_sub">恢复默认 Download/APK Signer Pro 目录</string>
+    <string name="settings_screen_working_dir_custom_set">工作目录已更新</string>
+
+    <string name="settings_screen_cat_about">关于应用</string>
+    <string name="settings_screen_about_title">APK Signer</string>
+    <string name="settings_screen_about_sub">采用 Material 3 Expressive 风格的现代 APK 签名工具</string>
+    <string name="settings_screen_btn_buy_coffee">请我喝杯咖啡</string>
+    <string name="settings_screen_btn_telegram">Telegram 频道</string>
+    <string name="settings_screen_btn_github_repo">GitHub 仓库</string>
+
+    <string name="keystore_sheet_title">密钥管理</string>
+    <string name="keystore_sheet_subtitle">选择当前签名密钥或导入自定义证书</string>
+    <string name="keystore_sheet_debug_meta">内置 • androiddebugkey • RSA 2048</string>
+    <string name="keystore_sheet_btn_add">导入 Keystore 密钥库文件</string>
+
+    <string name="keystore_password_dialog_title">导入密钥库</string>
+    <string name="keystore_password_dialog_path_label">密钥库文件</string>
+    <string name="keystore_password_dialog_password_label">密钥库密码</string>
+    <string name="keystore_password_dialog_custom_title_label">标题 (可选)</string>
+    <string name="keystore_password_dialog_alias_label">密钥别名</string>
+    <string name="keystore_password_dialog_select_file">浏览文件</string>
+    <string name="keystore_password_dialog_verify">验证密钥库</string>
+    <string name="keystore_password_dialog_add">添加密钥库</string>
+    <string name="keystore_password_dialog_invalid_pw">加载密钥库失败。请检查密码或格式。</string>
+    <string name="keystore_password_dialog_cancel">取消</string>
+    <string name="keystore_password_dialog_info_format">格式</string>
+    <string name="keystore_password_dialog_info_alias">别名</string>
+    <string name="keystore_password_dialog_info_algorithm">算法</string>
+    <string name="keystore_password_dialog_info_validity">有效期</string>
+    <string name="keystore_password_dialog_info_subject">所有者</string>
+    <string name="keystore_password_dialog_info_fingerprint">SHA-256 指纹</string>
+    <string name="keystore_password_dialog_verified_success">密钥库验证成功</string>
+    <string name="keystore_password_dialog_no_file">请先选择密钥库文件</string>
+    <string name="keystore_password_dialog_no_pw">请输入密钥库密码</string>
+    <string name="keystore_password_dialog_error_label">错误详情</string>
+    <string name="keystore_password_dialog_copy_error">复制错误信息</string>
+    <string name="keystore_password_dialog_error_copied">错误信息已复制到剪贴板</string>
+
+    <string name="error_logger_dialog_title">签名执行日志</string>
+    <string name="error_logger_dialog_copy">复制日志</string>
+    <string name="error_logger_dialog_dismiss">关闭</string>
+    <string name="error_logger_dialog_copied">错误日志已复制到剪贴板</string>
+
+    <string name="installer_helper_install_success">已成功发起安装</string>
+    <string name="installer_helper_install_error">安装失败：%1$s</string>
+    <string name="installer_helper_installing_split">正在安装分卷应用包...</string>
+    <string name="installer_helper_file_not_found">在设备存储中未找到目标文件</string>
+    <string name="installer_helper_permission_needed">需要安装应用权限以完成安装</string>
+
+    <string name="app_update_sheet_title">发现新版本</string>
+    <string name="app_update_sheet_notes">更新日志</string>
+    <string name="app_update_sheet_btn_later">稍后</string>
+    <string name="app_update_sheet_btn_download">下载更新</string>
+</resources>

@@ -1,6 +1,13 @@
 package com.ameermuawiya.apksigner.ui.navigation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
@@ -18,17 +25,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.ameermuawiya.apksigner.R
-import com.ameermuawiya.apksigner.ui.screens.AppDetailsScreen
 import com.ameermuawiya.apksigner.ui.screens.HistoryScreen
 import com.ameermuawiya.apksigner.ui.screens.HomeScreen
 import com.ameermuawiya.apksigner.ui.screens.SettingsScreen
+import com.ameermuawiya.apksigner.ui.screens.SignPackageScreen
 import com.ameermuawiya.apksigner.ui.theme.ApkSignerTheme
 import com.ameermuawiya.apksigner.ui.viewmodel.MainViewModel
 
@@ -42,39 +49,32 @@ data class NavItem(
 )
 
 /**
- * Main application navigation container managing tab switching and app details screen routing.
+ * Main application navigation container managing tab switching and persistent screen states.
  */
 @Composable
 fun NavContainer(viewModel: MainViewModel) {
     val selectedDetails by viewModel.selectedAppDetails.collectAsState()
+    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
 
-    if (selectedDetails != null) {
-        AppDetailsScreen(
-            viewModel = viewModel,
-            details = selectedDetails!!,
-            onBack = { viewModel.clearSelectedTarget() }
+    val navItems = listOf(
+        NavItem(
+            title = stringResource(R.string.nav_container_home),
+            selectedIcon = Icons.Filled.Home,
+            unselectedIcon = Icons.Outlined.Home
+        ),
+        NavItem(
+            title = stringResource(R.string.nav_container_history),
+            selectedIcon = Icons.Filled.History,
+            unselectedIcon = Icons.Outlined.History
+        ),
+        NavItem(
+            title = stringResource(R.string.nav_container_settings),
+            selectedIcon = Icons.Filled.Settings,
+            unselectedIcon = Icons.Outlined.Settings
         )
-    } else {
-        var selectedTab by remember { mutableIntStateOf(0) }
+    )
 
-        val navItems = listOf(
-            NavItem(
-                title = stringResource(R.string.nav_container_home),
-                selectedIcon = Icons.Filled.Home,
-                unselectedIcon = Icons.Outlined.Home
-            ),
-            NavItem(
-                title = stringResource(R.string.nav_container_history),
-                selectedIcon = Icons.Filled.History,
-                unselectedIcon = Icons.Outlined.History
-            ),
-            NavItem(
-                title = stringResource(R.string.nav_container_settings),
-                selectedIcon = Icons.Filled.Settings,
-                unselectedIcon = Icons.Outlined.Settings
-            )
-        )
-
+    Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             bottomBar = {
                 NavigationBar {
@@ -102,6 +102,26 @@ fun NavContainer(viewModel: MainViewModel) {
                     1 -> HistoryScreen(viewModel = viewModel)
                     2 -> SettingsScreen(viewModel = viewModel)
                 }
+            }
+        }
+
+        AnimatedVisibility(
+            visible = selectedDetails != null,
+            enter = fadeIn(animationSpec = tween(240)) + slideInHorizontally(
+                initialOffsetX = { fullWidth -> fullWidth },
+                animationSpec = tween(240)
+            ),
+            exit = fadeOut(animationSpec = tween(200)) + slideOutHorizontally(
+                targetOffsetX = { fullWidth -> fullWidth },
+                animationSpec = tween(200)
+            )
+        ) {
+            selectedDetails?.let { details ->
+                SignPackageScreen(
+                    viewModel = viewModel,
+                    details = details,
+                    onBack = { viewModel.clearSelectedTarget() }
+                )
             }
         }
     }

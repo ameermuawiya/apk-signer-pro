@@ -17,7 +17,8 @@ class NotificationHelper(private val context: Context) {
 
     companion object {
         private const val CHANNEL_ID = "apk_signer_completion_channel"
-        private const val NOTIFICATION_ID = 1001
+        private const val SIGNING_NOTIFICATION_ID = 1001
+        private const val INSTALL_NOTIFICATION_ID = 1002
     }
 
     init {
@@ -44,16 +45,19 @@ class NotificationHelper(private val context: Context) {
     }
 
     /**
-     * Shows high priority completion notification with single top activity intent.
+     * Shows high priority completion notification with click-to-install action.
      */
-    fun showCompletionNotification(title: String, message: String) {
+    fun showCompletionNotification(title: String, message: String, targetFilePath: String? = null) {
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            if (!targetFilePath.isNullOrBlank()) {
+                putExtra("EXTRA_INSTALL_PATH", targetFilePath)
+            }
         }
 
         val pendingIntent = PendingIntent.getActivity(
             context,
-            0,
+            SIGNING_NOTIFICATION_ID,
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -70,6 +74,38 @@ class NotificationHelper(private val context: Context) {
 
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(NOTIFICATION_ID, builder.build())
+        notificationManager.notify(SIGNING_NOTIFICATION_ID, builder.build())
+    }
+
+    /**
+     * Shows installation success alert notification.
+     */
+    fun showInstallationSuccessNotification(packageNameOrApp: String) {
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            INSTALL_NOTIFICATION_ID,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val title = "Application Installed"
+        val message = "$packageNameOrApp has been successfully installed."
+
+        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(message))
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(INSTALL_NOTIFICATION_ID, builder.build())
     }
 }

@@ -2,9 +2,11 @@ package com.ameermuawiya.apksigner.data.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Environment
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.io.File
 
 /**
  * Data class representing a saved custom keystore metadata record.
@@ -19,9 +21,9 @@ data class CustomKeyRecord(
 )
 
 /**
- * Manages user preferences, signature scheme toggles, and keystore credential persistence.
+ * Manages user preferences, signature scheme toggles, keystores, and storage locations.
  */
-class SettingsManager(context: Context) {
+class SettingsManager(private val context: Context) {
 
     private val prefs: SharedPreferences =
         context.getSharedPreferences("apk_signer_prefs", Context.MODE_PRIVATE)
@@ -50,6 +52,78 @@ class SettingsManager(context: Context) {
     private val _customKeyAlias = MutableStateFlow(prefs.getString("custom_key_alias", null))
     val customKeyAlias: StateFlow<String?> = _customKeyAlias.asStateFlow()
 
+    private val _workingDirectoryPath = MutableStateFlow(loadInitialWorkingDirectory())
+    val workingDirectoryPath: StateFlow<String> = _workingDirectoryPath.asStateFlow()
+
+    /**
+     * Resolves default working directory folder in external public downloads or app files.
+     */
+    fun getDefaultWorkingDirectory(): File {
+        return try {
+            val downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            val defaultDir = File(downloadDir, "APK Signer Pro")
+            if (!defaultDir.exists()) {
+                defaultDir.mkdirs()
+            }
+            defaultDir
+        } catch (e: Exception) {
+            val fallback = File(context.getExternalFilesDir(null), "APK Signer Pro")
+            if (!fallback.exists()) fallback.mkdirs()
+            fallback
+        }
+    }
+
+    /**
+     * Loads working directory path from storage preferences or default folder.
+     */
+    private fun loadInitialWorkingDirectory(): String {
+        val saved = prefs.getString("working_directory_path", null)
+        if (!saved.isNullOrBlank()) {
+            val file = File(saved)
+            if (file.exists() || file.mkdirs()) {
+                return file.absolutePath
+            }
+        }
+        return getDefaultWorkingDirectory().absolutePath
+    }
+
+    /**
+     * Obtains valid output working directory File instance ready for writing.
+     */
+    fun getEffectiveWorkingDirectory(): File {
+        val path = _workingDirectoryPath.value
+        val dir = File(path)
+        if (!dir.exists()) {
+            dir.mkdirs()
+        }
+        return if (dir.exists()) dir else getDefaultWorkingDirectory()
+    }
+
+    /**
+     * Updates working directory path setting and persists to preferences.
+     */
+    fun setWorkingDirectory(path: String) {
+        val file = File(path)
+        if (!file.exists()) {
+            file.mkdirs()
+        }
+        val cleanPath = file.absolutePath
+        prefs.edit().putString("working_directory_path", cleanPath).apply()
+        _workingDirectoryPath.value = cleanPath
+    }
+
+    /**
+     * Resets working directory path back to the standard default folder.
+     */
+    fun resetWorkingDirectory() {
+        val defaultPath = getDefaultWorkingDirectory().absolutePath
+        prefs.edit().remove("working_directory_path").apply()
+        _workingDirectoryPath.value = defaultPath
+    }
+
+    /**
+     * Loads custom keystore records from persistent string set.
+     */
     private fun loadKeyRecords(): List<CustomKeyRecord> {
         val set = prefs.getStringSet("custom_keys_set", emptySet()) ?: emptySet()
         return set.mapNotNull { item ->
@@ -157,6 +231,9 @@ class SettingsManager(context: Context) {
         }
     }
 
+    /**
+     * Serializes key record list and commits to persistent preferences.
+     */
     private fun saveKeyRecords(list: List<CustomKeyRecord>) {
         val set = list.map { "${it.id}|${it.name}|${it.path}|${it.alias}|${it.format}|${it.details}" }.toSet()
         prefs.edit().putStringSet("custom_keys_set", set).apply()

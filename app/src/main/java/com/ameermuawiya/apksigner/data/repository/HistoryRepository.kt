@@ -12,20 +12,24 @@ class HistoryRepository(private val historyDao: HistoryDao) {
     val allHistory: Flow<List<HistoryEntity>> = historyDao.getAllHistory()
 
     /**
-     * Inserts new signing record into history table.
+     * Inserts new signing record with key alias and signature schemes into history table.
      */
     suspend fun addHistory(
         fileName: String,
         filePath: String,
         appName: String = "",
-        packageName: String = ""
+        packageName: String = "",
+        keyAlias: String = "androiddebugkey",
+        schemes: String = ""
     ): Long {
         return historyDao.insertHistory(
             HistoryEntity(
                 fileName = fileName,
                 filePath = filePath,
                 appName = appName,
-                packageName = packageName
+                packageName = packageName,
+                keyAlias = keyAlias,
+                schemes = schemes
             )
         )
     }

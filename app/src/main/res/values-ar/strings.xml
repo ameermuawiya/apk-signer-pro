@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">APK Signer Pro</string>
+
+    <string name="main_activity_permission_notifications">إذن الإشعارات مطلوب لتنبيهات توقيع التطبيقات.</string>
+
+    <string name="nav_container_home">الرئيسية</string>
+    <string name="nav_container_history">السجل</string>
+    <string name="nav_container_settings">الإعدادات</string>
+
+    <string name="home_screen_title">موقع APK</string>
+    <string name="home_screen_select_file">اختر ملف APK / APKS / XAPK</string>
+    <string name="home_screen_tab_user_apps">تطبيقات المستخدم</string>
+    <string name="home_screen_tab_system_apps">تطبيقات النظام</string>
+    <string name="home_screen_search_hint">البحث في التطبيقات المثبتة...</string>
+    <string name="home_screen_empty_title">لم يتم العثور على تطبيقات</string>
+    <string name="home_screen_empty_subtitle">لا توجد تطبيقات تطابق بحثك الحالي أو علامة التبويب.</string>
+    <string name="home_screen_action_dialog_title">خيارات التطبيق</string>
+    <string name="home_screen_action_sign">توقيع التطبيق</string>
+    <string name="home_screen_action_extract">نسخ احتياطي لـ APK</string>
+    <string name="home_screen_action_share">مشاركة APK</string>
+    <string name="home_screen_extracted_success">تم حفظ النسخة الاحتياطية بنجاح:\n%1$s</string>
+    <string name="home_screen_extracted_fail">فشل في النسخ الاحتياطي للتطبيق</string>
+
+    <string name="sign_package_screen_title">توقيع التطبيق</string>
+    <string name="sign_package_screen_detected_sig">التوقيع المكتشف</string>
+    <string name="sign_package_screen_unsigned">غير موقع</string>
+    <string name="sign_package_screen_config">إعدادات التوقيع</string>
+    <string name="sign_package_screen_key_default">مفتاح التصحيح المدمج</string>
+    <string name="sign_package_screen_key_default_desc">Alias: androiddebugkey</string>
+    <string name="sign_package_screen_change">تغيير</string>
+    <string name="sign_package_screen_schemes">مخططات التوقيع</string>
+    <string name="sign_package_screen_v1">v1</string>
+    <string name="sign_package_screen_v2">v2</string>
+    <string name="sign_package_screen_v3">v3</string>
+    <string name="sign_package_screen_v4">v4</string>
+    <string name="sign_package_screen_sign_now">توقيع الحزمة الآن</string>
+    <string name="sign_package_screen_cancel">إلغاء</string>
+    <string name="sign_package_screen_success_title">اكتمل التوقيع بنجاح</string>
+    <string name="sign_package_screen_success_msg">تم الحفظ في:\n%1$s</string>
+    <string name="sign_package_screen_install">تثبيت APK</string>
+    <string name="sign_package_screen_share">مشاركة الملف</string>
+    <string name="sign_package_screen_error_title">فشلت مهمة التوقيع</string>
+    <string name="sign_package_screen_error_subtitle">حدث خطأ أثناء التوقيع. انقر أدناه للاطلاع على التفاصيل.</string>
+    <string name="sign_package_screen_view_error_log">عرض سجل الأخطاء</string>
+    <string name="sign_package_screen_retry">إعادة المحاولة</string>
+    <string name="sign_package_screen_live_logs">سجلات التنفيذ المباشرة</string>
+    <string name="sign_package_screen_copy_logs">نسخ السجلات</string>
+    <string name="sign_package_screen_logs_copied">تم نسخ السجلات إلى الحافظة</string>
+    <string name="sign_package_screen_add_custom_key">إضافة مخزن مفاتيح مخصص</string>
+    <string name="sign_package_screen_delete_key">حذف المفتاح</string>
+    <string name="sign_package_screen_back_desc">رجوع</string>
+
+    <string name="history_screen_title">سجل التوقيع</string>
+    <string name="history_screen_search_hint">البحث في السجل...</string>
+    <string name="history_screen_empty_title">لا توجد ملفات موقعة</string>
+    <string name="history_screen_empty_subtitle">ستظهر الملفات الموقعة هنا تلقائيًا لسهولة الوصول إليها.</string>
+    <string name="history_screen_action_install">تثبيت APK</string>
+    <string name="history_screen_action_share">مشاركة</string>
+    <string name="history_screen_action_copy_path">نسخ المسار</string>
+    <string name="history_screen_path_copied">تم نسخ المسار إلى الحافظة</string>
+    <string name="history_screen_action_delete">حذف السجل</string>
+    <string name="history_screen_delete_dialog_title">حذف سجل التوقيع</string>
+    <string name="history_screen_delete_dialog_msg">هل تريد إزالة هذا العنصر من سجل التوقيع؟</string>
+    <string name="history_screen_delete_file_checkbox">حذف الملف الموقع أيضًا من وحدة تخزين الجهاز</string>
+    <string name="history_screen_confirm_delete">حذف</string>
+    <string name="history_screen_cancel">إلغاء</string>
+    <string name="history_screen_file_missing">الملف مفقود</string>
+    <string name="history_screen_installed_badge">مثبت</string>
+    <string name="history_screen_key_chip">المفتاح: %1$s</string>
+
+    <string name="settings_screen_title">الإعدادات</string>
+    <string name="settings_screen_cat_appearance">المظهر</string>
+    <string name="settings_screen_theme_mode">وضع المظهر</string>
+    <string name="settings_screen_theme_system">النظام</string>
+    <string name="settings_screen_theme_light">فاتح</string>
+    <string name="settings_screen_theme_dark">داكن</string>
+    <string name="settings_screen_dynamic_color">الألوان التكيفية</string>
+    <string name="settings_screen_dynamic_color_sub">ألوان مستوحاة من خلفية الشاشة (Material You)</string>
+
+    <string name="settings_screen_cat_key_mgmt">إدارة المفاتيح</string>
+    <string name="settings_screen_active_key">مفتاح التوقيع النشط</string>
+    <string name="settings_screen_key_default">مفتاح التصحيح المدمج</string>
+    <string name="settings_screen_key_manage">إدارة المفاتيح المخصصة</string>
+
+    <string name="settings_screen_cat_schemes">مخططات التوقيع الافتراضية</string>
+    <string name="settings_screen_v1_title">مخطط v1</string>
+    <string name="settings_screen_v1_sub">متوافق مع أندرويد 4.4 والإصدارات الأقدم</string>
+    <string name="settings_screen_v2_title">مخطط v2</string>
+    <string name="settings_screen_v2_sub">مطلوب لأندرويد 7.0 والإصدارات الأحدث</string>
+    <string name="settings_screen_v3_title">مخطط v3</string>
+    <string name="settings_screen_v3_sub">دعم تدوير المفاتيح لأندرويد 9.0 والإصدارات الأحدث</string>
+    <string name="settings_screen_v4_title">مخطط v4</string>
+    <string name="settings_screen_v4_sub">ملف توقيع منفصل للتدفق لأندرويد 11.0 والإصدارات الأحدث</string>
+
+    <string name="settings_screen_cat_storage">التخزين ومجلد العمل</string>
+    <string name="settings_screen_working_dir_title">مجلد العمل</string>
+    <string name="settings_screen_working_dir_desc">انقر لتحديد موقع مجلد عمل مخصص</string>
+    <string name="settings_screen_working_dir_reset_title">إعادة تعيين مجلد العمل</string>
+    <string name="settings_screen_working_dir_reset_sub">استعادة مجلد Download/APK Signer Pro الافتراضي</string>
+    <string name="settings_screen_working_dir_custom_set">تم تحديث مجلد العمل</string>
+
+    <string name="settings_screen_cat_about">حول التطبيق</string>
+    <string name="settings_screen_about_title">APK Signer</string>
+    <string name="settings_screen_about_sub">أداة توقيع APK حديثة بتصميم Material 3 Expressive</string>
+    <string name="settings_screen_btn_buy_coffee">دعم المشروع</string>
+    <string name="settings_screen_btn_telegram">تيليجرام</string>
+    <string name="settings_screen_btn_github_repo">مستودع GitHub</string>
+
+    <string name="keystore_sheet_title">إدارة المفاتيح</string>
+    <string name="keystore_sheet_subtitle">اختر مفتاح توقيع نشط أو استورد شهادات مخصصة</string>
+    <string name="keystore_sheet_debug_meta">مدمج • androiddebugkey • RSA 2048</string>
+    <string name="keystore_sheet_btn_add">استيراد ملف مخزن المفاتيح</string>
+
+    <string name="keystore_password_dialog_title">استيراد مخزن المفاتيح</string>
+    <string name="keystore_password_dialog_path_label">ملف مخزن المفاتيح</string>
+    <string name="keystore_password_dialog_password_label">كلمة مرور مخزن المفاتيح</string>
+    <string name="keystore_password_dialog_custom_title_label">العنوان (اختياري)</string>
+    <string name="keystore_password_dialog_alias_label">اسم المفتاح المستعار</string>
+    <string name="keystore_password_dialog_select_file">تصفح الملف</string>
+    <string name="keystore_password_dialog_verify">التحقق من مخزن المفاتيح</string>
+    <string name="keystore_password_dialog_add">إضافة مخزن المفاتيح</string>
+    <string name="keystore_password_dialog_invalid_pw">فشل تحميل مخزن المفاتيح. تحقق من كلمة المرور أو التنسيق.</string>
+    <string name="keystore_password_dialog_cancel">إلغاء</string>
+    <string name="keystore_password_dialog_info_format">التنسيق</string>
+    <string name="keystore_password_dialog_info_alias">الاسم المستعار</string>
+    <string name="keystore_password_dialog_info_algorithm">الخوارزمية</string>
+    <string name="keystore_password_dialog_info_validity">الصلاحية</string>
+    <string name="keystore_password_dialog_info_subject">الموضوع</string>
+    <string name="keystore_password_dialog_info_fingerprint">بصمة SHA-256</string>
+    <string name="keystore_password_dialog_verified_success">تم التحقق من مخزن المفاتيح بنجاح</string>
+    <string name="keystore_password_dialog_no_file">يرجى تحديد ملف مخزن المفاتيح أولاً</string>
+    <string name="keystore_password_dialog_no_pw">يرجى إدخال كلمة مرور مخزن المفاتيح</string>
+    <string name="keystore_password_dialog_error_label">تفاصيل الخطأ</string>
+    <string name="keystore_password_dialog_copy_error">نسخ الخطأ</string>
+    <string name="keystore_password_dialog_error_copied">تم نسخ تفاصيل الخطأ إلى الحافظة</string>
+
+    <string name="error_logger_dialog_title">سجل تنفيذ التوقيع</string>
+    <string name="error_logger_dialog_copy">نسخ السجل</string>
+    <string name="error_logger_dialog_dismiss">إغلاق</string>
+    <string name="error_logger_dialog_copied">تم نسخ سجل الأخطاء إلى الحافظة</string>
+
+    <string name="installer_helper_install_success">تم بدء عملية التثبيت بنجاح</string>
+    <string name="installer_helper_install_error">فشل التثبيت: %1$s</string>
+    <string name="installer_helper_installing_split">جاري تثبيت حزمة التطبيق المقسمة...</string>
+    <string name="installer_helper_file_not_found">الملف الهدف غير موجود على مساحة تخزين الجهاز</string>
+    <string name="installer_helper_permission_needed">إذن التثبيت مطلوب لتثبيت التطبيقات</string>
+
+    <string name="app_update_sheet_title">تحديث جديد متوفر</string>
+    <string name="app_update_sheet_notes">ما الجديد</string>
+    <string name="app_update_sheet_btn_later">لاحقاً</string>
+    <string name="app_update_sheet_btn_download">تحميل التحديث</string>
+</resources>

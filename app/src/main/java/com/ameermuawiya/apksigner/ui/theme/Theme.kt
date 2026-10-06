@@ -3,7 +3,8 @@ package com.ameermuawiya.apksigner.ui.theme
 import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -27,12 +28,24 @@ private val LightColorScheme = lightColorScheme(
     onTertiary = LightOnTertiary,
     tertiaryContainer = LightTertiaryContainer,
     onTertiaryContainer = LightOnTertiaryContainer,
+    error = LightError,
+    onError = LightOnError,
+    errorContainer = LightErrorContainer,
+    onErrorContainer = LightOnErrorContainer,
     background = LightBackground,
     onBackground = LightOnBackground,
     surface = LightSurface,
     onSurface = LightOnSurface,
     surfaceVariant = LightSurfaceVariant,
     onSurfaceVariant = LightOnSurfaceVariant,
+    outline = LightOutline,
+    outlineVariant = LightOutlineVariant,
+    scrim = LightScrim,
+    inverseSurface = LightInverseSurface,
+    inverseOnSurface = LightInverseOnSurface,
+    inversePrimary = LightInversePrimary,
+    surfaceDim = LightSurfaceDim,
+    surfaceBright = LightSurfaceBright,
     surfaceContainerLowest = LightSurfaceContainerLowest,
     surfaceContainerLow = LightSurfaceContainerLow,
     surfaceContainer = LightSurfaceContainer,
@@ -53,12 +66,24 @@ private val DarkColorScheme = darkColorScheme(
     onTertiary = DarkOnTertiary,
     tertiaryContainer = DarkTertiaryContainer,
     onTertiaryContainer = DarkOnTertiaryContainer,
+    error = DarkError,
+    onError = DarkOnError,
+    errorContainer = DarkErrorContainer,
+    onErrorContainer = DarkOnErrorContainer,
     background = DarkBackground,
     onBackground = DarkOnBackground,
     surface = DarkSurface,
     onSurface = DarkOnSurface,
     surfaceVariant = DarkSurfaceVariant,
     onSurfaceVariant = DarkOnSurfaceVariant,
+    outline = DarkOutline,
+    outlineVariant = DarkOutlineVariant,
+    scrim = DarkScrim,
+    inverseSurface = DarkInverseSurface,
+    inverseOnSurface = DarkInverseOnSurface,
+    inversePrimary = DarkInversePrimary,
+    surfaceDim = DarkSurfaceDim,
+    surfaceBright = DarkSurfaceBright,
     surfaceContainerLowest = DarkSurfaceContainerLowest,
     surfaceContainerLow = DarkSurfaceContainerLow,
     surfaceContainer = DarkSurfaceContainer,
@@ -67,8 +92,9 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 /**
- * Configures dynamic color palettes, status bar icon visibility, and dark mode theme switching.
+ * Configures dynamic color palettes, status bar icon visibility, and expressive Material 3 theme switching.
  */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ApkSignerTheme(
     themeMode: String = "system",
@@ -102,8 +128,10 @@ fun ApkSignerTheme(
         }
     }
 
-    MaterialTheme(
+    MaterialExpressiveTheme(
         colorScheme = colorScheme,
+        typography = ExpressiveTypography,
+        shapes = ExpressiveShapes,
         content = content
     )
 }

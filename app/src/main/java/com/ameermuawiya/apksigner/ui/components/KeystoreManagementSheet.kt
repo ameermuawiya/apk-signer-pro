@@ -113,7 +113,7 @@ fun KeystoreManagementSheet(
 
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                text = stringResource(R.string.app_details_screen_key_default),
+                                text = stringResource(R.string.sign_package_screen_key_default),
                                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                                 color = MaterialTheme.colorScheme.onSurface
                             )
@@ -225,7 +225,7 @@ fun KeystoreManagementSheet(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.DeleteOutline,
-                                    contentDescription = stringResource(R.string.app_details_screen_delete_key),
+                                    contentDescription = stringResource(R.string.sign_package_screen_delete_key),
                                     tint = MaterialTheme.colorScheme.error,
                                     modifier = Modifier.size(20.dp)
                                 )

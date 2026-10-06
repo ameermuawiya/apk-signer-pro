@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">APK Signer Pro</string>
+
+    <string name="main_activity_permission_notifications">Benachrichtigungsberechtigung für Signierhinweise erforderlich.</string>
+
+    <string name="nav_container_home">Start</string>
+    <string name="nav_container_history">Verlauf</string>
+    <string name="nav_container_settings">Einstellungen</string>
+
+    <string name="home_screen_title">APK Signer</string>
+    <string name="home_screen_select_file">APK / APKS / XAPK auswählen</string>
+    <string name="home_screen_tab_user_apps">Benutzer-Apps</string>
+    <string name="home_screen_tab_system_apps">System-Apps</string>
+    <string name="home_screen_search_hint">Installierte Apps durchsuchen...</string>
+    <string name="home_screen_empty_title">Keine Anwendungen gefunden</string>
+    <string name="home_screen_empty_subtitle">Keine Anwendungen entsprechen Ihrer Suche oder dem ausgewählten Tab.</string>
+    <string name="home_screen_action_dialog_title">App-Optionen</string>
+    <string name="home_screen_action_sign">App signieren</string>
+    <string name="home_screen_action_extract">APK sichern</string>
+    <string name="home_screen_action_share">APK teilen</string>
+    <string name="home_screen_extracted_success">Sicherung erfolgreich gespeichert:\n%1$s</string>
+    <string name="home_screen_extracted_fail">Sicherung der Anwendung fehlgeschlagen</string>
+
+    <string name="sign_package_screen_title">Anwendung signieren</string>
+    <string name="sign_package_screen_detected_sig">Erkannte Signatur</string>
+    <string name="sign_package_screen_unsigned">Unsigniert</string>
+    <string name="sign_package_screen_config">Signatur-Konfiguration</string>
+    <string name="sign_package_screen_key_default">Integrierter Debug-Schlüssel</string>
+    <string name="sign_package_screen_key_default_desc">Alias: androiddebugkey</string>
+    <string name="sign_package_screen_change">Ändern</string>
+    <string name="sign_package_screen_schemes">Signatur-Schemas</string>
+    <string name="sign_package_screen_v1">v1</string>
+    <string name="sign_package_screen_v2">v2</string>
+    <string name="sign_package_screen_v3">v3</string>
+    <string name="sign_package_screen_v4">v4</string>
+    <string name="sign_package_screen_sign_now">Paket jetzt signieren</string>
+    <string name="sign_package_screen_cancel">Abbrechen</string>
+    <string name="sign_package_screen_success_title">Signieren erfolgreich abgeschlossen</string>
+    <string name="sign_package_screen_success_msg">Gespeichert unter:\n%1$s</string>
+    <string name="sign_package_screen_install">APK installieren</string>
+    <string name="sign_package_screen_share">Datei teilen</string>
+    <string name="sign_package_screen_error_title">Signieren fehlgeschlagen</string>
+    <string name="sign_package_screen_error_subtitle">Beim Signieren ist ein Fehler aufgetreten. Tippen Sie unten für Details.</string>
+    <string name="sign_package_screen_view_error_log">Fehlerprotokoll anzeigen</string>
+    <string name="sign_package_screen_retry">Erneut versuchen</string>
+    <string name="sign_package_screen_live_logs">Live-Ausführungsprotokoll</string>
+    <string name="sign_package_screen_copy_logs">Protokolle kopieren</string>
+    <string name="sign_package_screen_logs_copied">Protokolle in Zwischenablage kopiert</string>
+    <string name="sign_package_screen_add_custom_key">Eigenen Keystore hinzufügen</string>
+    <string name="sign_package_screen_delete_key">Schlüssel löschen</string>
+    <string name="sign_package_screen_back_desc">Zurück</string>
+
+    <string name="history_screen_title">Signier-Verlauf</string>
+    <string name="history_screen_search_hint">Verlauf durchsuchen...</string>
+    <string name="history_screen_empty_title">Keine signierten Dateien</string>
+    <string name="history_screen_empty_subtitle">Signierte Dateien erscheinen hier automatisch für den Schnellzugriff.</string>
+    <string name="history_screen_action_install">APK installieren</string>
+    <string name="history_screen_action_share">Teilen</string>
+    <string name="history_screen_action_copy_path">Pfad kopieren</string>
+    <string name="history_screen_path_copied">Pfad in die Zwischenablage kopiert</string>
+    <string name="history_screen_action_delete">Eintrag löschen</string>
+    <string name="history_screen_delete_dialog_title">Verlaufseintrag löschen</string>
+    <string name="history_screen_delete_dialog_msg">Eintrag aus dem Signierverlauf entfernen?</string>
+    <string name="history_screen_delete_file_checkbox">Signierte Datei ebenfalls vom Speicher löschen</string>
+    <string name="history_screen_confirm_delete">Löschen</string>
+    <string name="history_screen_cancel">Abbrechen</string>
+    <string name="history_screen_file_missing">Datei fehlt</string>
+    <string name="history_screen_installed_badge">Installiert</string>
+    <string name="history_screen_key_chip">Schlüssel: %1$s</string>
+
+    <string name="settings_screen_title">Einstellungen</string>
+    <string name="settings_screen_cat_appearance">Erscheinungsbild</string>
+    <string name="settings_screen_theme_mode">Design-Modus</string>
+    <string name="settings_screen_theme_system">System</string>
+    <string name="settings_screen_theme_light">Hell</string>
+    <string name="settings_screen_theme_dark">Dunkel</string>
+    <string name="settings_screen_dynamic_color">Dynamische Farben</string>
+    <string name="settings_screen_dynamic_color_sub">Material You Akzentfarben aus dem Hintergrundbild</string>
+
+    <string name="settings_screen_cat_key_mgmt">Schlüsselverwaltung</string>
+    <string name="settings_screen_active_key">Aktiver Signierschlüssel</string>
+    <string name="settings_screen_key_default">Integrierter Debug-Schlüssel</string>
+    <string name="settings_screen_key_manage">Eigene Schlüssel verwalten</string>
+
+    <string name="settings_screen_cat_schemes">Standard-Signaturschemas</string>
+    <string name="settings_screen_v1_title">v1 Schema</string>
+    <string name="settings_screen_v1_sub">Kompatibel mit Android 4.4 und älter</string>
+    <string name="settings_screen_v2_title">v2 Schema</string>
+    <string name="settings_screen_v2_sub">Erforderlich für Android 7.0 und neuer</string>
+    <string name="settings_screen_v3_title">v3 Schema</string>
+    <string name="settings_screen_v3_sub">Schlüsselrotationsunterstützung für Android 9.0 und neuer</string>
+    <string name="settings_screen_v4_title">v4 Schema</string>
+    <string name="settings_screen_v4_sub">Separate Streaming-Signaturdatei für Android 11.0 und neuer</string>
+
+    <string name="settings_screen_cat_storage">Speicher &amp; Arbeitsverzeichnis</string>
+    <string name="settings_screen_working_dir_title">Arbeitsverzeichnis</string>
+    <string name="settings_screen_working_dir_desc">Tippen, um ein benutzerdefiniertes Verzeichnis festzulegen</string>
+    <string name="settings_screen_working_dir_reset_title">Arbeitsverzeichnis zurücksetzen</string>
+    <string name="settings_screen_working_dir_reset_sub">Standardverzeichnis Download/APK Signer Pro wiederherstellen</string>
+    <string name="settings_screen_working_dir_custom_set">Arbeitsverzeichnis aktualisiert</string>
+
+    <string name="settings_screen_cat_about">Über die App</string>
+    <string name="settings_screen_about_title">APK Signer</string>
+    <string name="settings_screen_about_sub">Modernes Material 3 Expressive APK-Signiertool</string>
+    <string name="settings_screen_btn_buy_coffee">Kauf mir einen Kaffee</string>
+    <string name="settings_screen_btn_telegram">Telegram</string>
+    <string name="settings_screen_btn_github_repo">GitHub Repository</string>
+
+    <string name="keystore_sheet_title">Schlüsselverwaltung</string>
+    <string name="keystore_sheet_subtitle">Aktiven Schlüssel auswählen oder eigene Zertifikate importieren</string>
+    <string name="keystore_sheet_debug_meta">Integriert • androiddebugkey • RSA 2048</string>
+    <string name="keystore_sheet_btn_add">Keystore-Datei importieren</string>
+
+    <string name="keystore_password_dialog_title">Keystore importieren</string>
+    <string name="keystore_password_dialog_path_label">Keystore-Datei</string>
+    <string name="keystore_password_dialog_password_label">Keystore-Passwort</string>
+    <string name="keystore_password_dialog_custom_title_label">Titel (Optional)</string>
+    <string name="keystore_password_dialog_alias_label">Schlüssel-Alias</string>
+    <string name="keystore_password_dialog_select_file">Datei auswählen</string>
+    <string name="keystore_password_dialog_verify">Keystore überprüfen</string>
+    <string name="keystore_password_dialog_add">Keystore hinzufügen</string>
+    <string name="keystore_password_dialog_invalid_pw">Keystore konnte nicht geladen werden. Passwort oder Format prüfen.</string>
+    <string name="keystore_password_dialog_cancel">Abbrechen</string>
+    <string name="keystore_password_dialog_info_format">Format</string>
+    <string name="keystore_password_dialog_info_alias">Alias</string>
+    <string name="keystore_password_dialog_info_algorithm">Algorithmus</string>
+    <string name="keystore_password_dialog_info_validity">Gültigkeit</string>
+    <string name="keystore_password_dialog_info_subject">Inhaber</string>
+    <string name="keystore_password_dialog_info_fingerprint">SHA-256 Fingerabdruck</string>
+    <string name="keystore_password_dialog_verified_success">Keystore erfolgreich verifiziert</string>
+    <string name="keystore_password_dialog_no_file">Bitte wählen Sie zuerst eine Keystore-Datei aus</string>
+    <string name="keystore_password_dialog_no_pw">Bitte geben Sie das Keystore-Passwort ein</string>
+    <string name="keystore_password_dialog_error_label">Fehlerdetails</string>
+    <string name="keystore_password_dialog_copy_error">Fehler kopieren</string>
+    <string name="keystore_password_dialog_error_copied">Fehlermeldung in die Zwischenablage kopiert</string>
+
+    <string name="error_logger_dialog_title">Ausführungsprotokoll</string>
+    <string name="error_logger_dialog_copy">Protokoll kopieren</string>
+    <string name="error_logger_dialog_dismiss">Schließen</string>
+    <string name="error_logger_dialog_copied">Fehlerprotokoll in Zwischenablage kopiert</string>
+
+    <string name="installer_helper_install_success">Installation erfolgreich eingeleitet</string>
+    <string name="installer_helper_install_error">Installation fehlgeschlagen: %1$s</string>
+    <string name="installer_helper_installing_split">Installiere geteiltes App-Paket...</string>
+    <string name="installer_helper_file_not_found">Zieldatei auf Gerätespeicher nicht gefunden</string>
+    <string name="installer_helper_permission_needed">Installationsberechtigung zum Installieren von Apps erforderlich</string>
+
+    <string name="app_update_sheet_title">Neues Update verfügbar</string>
+    <string name="app_update_sheet_notes">Was gibt\'s Neues</string>
+    <string name="app_update_sheet_btn_later">Später</string>
+    <string name="app_update_sheet_btn_download">Update herunterladen</string>
+</resources>

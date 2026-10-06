@@ -6,9 +6,10 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,30 +27,30 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Android
+import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Backup
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.TaskAlt
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -59,7 +60,6 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -72,61 +72,51 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import com.ameermuawiya.apksigner.R
 import com.ameermuawiya.apksigner.data.model.InstalledAppInfo
+import com.ameermuawiya.apksigner.ui.components.AppUpdateBottomSheet
 import com.ameermuawiya.apksigner.ui.components.CardGroupPosition
+import com.ameermuawiya.apksigner.ui.components.ExpressiveLoadingIndicator
+import com.ameermuawiya.apksigner.ui.components.ExpressivePullToRefreshBox
+import com.ameermuawiya.apksigner.ui.components.FullScreenLoadingOverlay
 import com.ameermuawiya.apksigner.ui.components.getGroupedCardShape
 import com.ameermuawiya.apksigner.ui.theme.ApkSignerTheme
 import com.ameermuawiya.apksigner.ui.viewmodel.MainViewModel
 
 /**
- * Main Home screen showing installed applications with modern rounded tab indicators and SAF backup.
+ * Main dashboard screen displaying installed applications, tab categorization, and quick package signing.
  */
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(viewModel: MainViewModel) {
     val context = LocalContext.current
     val installedApps by viewModel.filteredInstalledApps.collectAsState()
-    val isLoading by viewModel.isAppsLoading.collectAsState()
+    val isInitialLoading by viewModel.isAppsLoading.collectAsState()
+    val isAppsRefreshing by viewModel.isAppsRefreshing.collectAsState()
+    val isBackingUp by viewModel.isBackingUp.collectAsState()
     val searchQuery by viewModel.searchQueryHome.collectAsState()
+    val activeTabIndex by viewModel.homeTabIndex.collectAsState()
+    val availableUpdate by viewModel.availableUpdate.collectAsState()
 
-    var activeTabIndex by remember { mutableIntStateOf(0) }
     var selectedAppForOptions by remember { mutableStateOf<InstalledAppInfo?>(null) }
-    var appPendingBackup by remember { mutableStateOf<InstalledAppInfo?>(null) }
 
-    val displayedApps = remember(installedApps, activeTabIndex) {
-        if (activeTabIndex == 0) {
-            installedApps.filter { !it.isSystemApp }
-        } else {
-            installedApps.filter { it.isSystemApp }
-        }
-    }
+    val userAppsListState = rememberLazyListState()
+    val systemAppsListState = rememberLazyListState()
 
     val filePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
+        contract = ActivityResultContracts.OpenDocument()
     ) { uri: Uri? ->
         uri?.let { viewModel.selectFileFromUri(it) }
     }
 
-    val backupDocLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.CreateDocument("application/vnd.android.package-archive")
-    ) { destinationUri: Uri? ->
-        val target = appPendingBackup
-        if (destinationUri != null && target != null) {
-            viewModel.backupApkToUri(target, destinationUri) { success, _ ->
-                if (success) {
-                    Toast.makeText(context, context.getString(R.string.home_screen_extracted_success), Toast.LENGTH_LONG).show()
-                } else {
-                    Toast.makeText(context, context.getString(R.string.home_screen_extracted_fail), Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-        appPendingBackup = null
-    }
+    val userApps = remember(installedApps) { installedApps.filter { !it.isSystemApp } }
+    val systemApps = remember(installedApps) { installedApps.filter { it.isSystemApp } }
+    val displayedApps = if (activeTabIndex == 0) userApps else systemApps
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
@@ -141,10 +131,18 @@ fun HomeScreen(viewModel: MainViewModel) {
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { filePickerLauncher.launch("*/*") },
+                onClick = {
+                    filePickerLauncher.launch(
+                        arrayOf(
+                            "application/vnd.android.package-archive",
+                            "application/zip",
+                            "application/octet-stream",
+                            "*/*"
+                        )
+                    )
+                },
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                shape = RoundedCornerShape(16.dp)
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -153,112 +151,166 @@ fun HomeScreen(viewModel: MainViewModel) {
             }
         }
     ) { innerPadding ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = innerPadding.calculateTopPadding())
-                .padding(horizontal = 16.dp)
         ) {
-            TextField(
-                value = searchQuery,
-                onValueChange = { viewModel.updateHomeSearchQuery(it) },
-                placeholder = { Text(text = stringResource(R.string.home_screen_search_hint)) },
-                leadingIcon = {
-                    Icon(imageVector = Icons.Default.Search, contentDescription = null)
-                },
-                singleLine = true,
-                shape = CircleShape,
-                colors = TextFieldDefaults.colors(
-                    unfocusedIndicatorColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer
-                ),
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            TabRow(
-                selectedTabIndex = activeTabIndex,
-                containerColor = MaterialTheme.colorScheme.surface,
-                contentColor = MaterialTheme.colorScheme.primary,
-                indicator = { tabPositions ->
-                    if (activeTabIndex < tabPositions.size) {
-                        Box(
-                            Modifier
-                                .tabIndicatorOffset(tabPositions[activeTabIndex])
-                                .height(3.5.dp)
-                                .clip(RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp, bottomStart = 0.dp, bottomEnd = 0.dp))
-                                .background(MaterialTheme.colorScheme.primary)
-                        )
-                    }
-                },
-                divider = {}
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
             ) {
-                Tab(
-                    selected = activeTabIndex == 0,
-                    onClick = { activeTabIndex = 0 },
-                    text = { Text(text = stringResource(R.string.home_screen_tab_user_apps)) }
+                TextField(
+                    value = searchQuery,
+                    onValueChange = { viewModel.updateHomeSearchQuery(it) },
+                    placeholder = { Text(text = stringResource(R.string.home_screen_search_hint)) },
+                    leadingIcon = {
+                        Icon(imageVector = Icons.Default.Search, contentDescription = null)
+                    },
+                    singleLine = true,
+                    shape = CircleShape,
+                    colors = TextFieldDefaults.colors(
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer
+                    ),
+                    modifier = Modifier.fillMaxWidth()
                 )
-                Tab(
-                    selected = activeTabIndex == 1,
-                    onClick = { activeTabIndex = 1 },
-                    text = { Text(text = stringResource(R.string.home_screen_tab_system_apps)) }
-                )
-            }
 
-            Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            if (isLoading) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+                PrimaryTabRow(
+                    selectedTabIndex = activeTabIndex,
+                    containerColor = Color.Transparent,
+                    contentColor = MaterialTheme.colorScheme.primary,
+                    indicator = {
+                        TabRowDefaults.PrimaryIndicator(
+                            modifier = Modifier.tabIndicatorOffset(activeTabIndex),
+                            width = 36.dp,
+                            height = 3.dp,
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = RoundedCornerShape(topStart = 3.dp, topEnd = 3.dp)
+                        )
+                    },
+                    divider = {}
                 ) {
-                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
-                }
-            } else if (displayedApps.isEmpty()) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = stringResource(R.string.home_screen_empty_search),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    Tab(
+                        selected = activeTabIndex == 0,
+                        onClick = { viewModel.setHomeTabIndex(0) },
+                        text = { Text(text = stringResource(R.string.home_screen_tab_user_apps)) }
+                    )
+                    Tab(
+                        selected = activeTabIndex == 1,
+                        onClick = { viewModel.setHomeTabIndex(1) },
+                        text = { Text(text = stringResource(R.string.home_screen_tab_system_apps)) }
                     )
                 }
-            } else {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(top = 2.dp, bottom = 12.dp),
-                    verticalArrangement = Arrangement.spacedBy(2.dp)
-                ) {
-                    itemsIndexed(
-                        items = displayedApps,
-                        key = { _, app -> app.packageName }
-                    ) { index, app ->
-                        val total = displayedApps.size
-                        val position = when {
-                            total == 1 -> CardGroupPosition.SINGLE
-                            index == 0 -> CardGroupPosition.FIRST
-                            index == total - 1 -> CardGroupPosition.LAST
-                            else -> CardGroupPosition.MIDDLE
-                        }
 
-                        InstalledAppCardItem(
-                            app = app,
-                            position = position,
-                            onClick = { viewModel.selectInstalledApp(app) },
-                            onLongClick = { selectedAppForOptions = app }
-                        )
+                Spacer(modifier = Modifier.height(4.dp))
+
+                ExpressivePullToRefreshBox(
+                    isRefreshing = isAppsRefreshing,
+                    onRefresh = { viewModel.loadInstalledApps(isPullToRefresh = true) },
+                    enabled = !isInitialLoading,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    if (isInitialLoading && installedApps.isEmpty()) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            ExpressiveLoadingIndicator(
+                                size = 52.dp,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    } else if (displayedApps.isEmpty()) {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            item {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center,
+                                    modifier = Modifier.padding(24.dp)
+                                ) {
+                                    Surface(
+                                        shape = CircleShape,
+                                        color = MaterialTheme.colorScheme.primaryContainer,
+                                        modifier = Modifier.size(80.dp)
+                                    ) {
+                                        Box(contentAlignment = Alignment.Center) {
+                                            Icon(
+                                                imageVector = Icons.Default.Apps,
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.primary,
+                                                modifier = Modifier.size(40.dp)
+                                            )
+                                        }
+                                    }
+
+                                    Spacer(modifier = Modifier.height(18.dp))
+
+                                    Text(
+                                        text = stringResource(R.string.home_screen_empty_title),
+                                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+
+                                    Spacer(modifier = Modifier.height(8.dp))
+
+                                    Text(
+                                        text = stringResource(R.string.home_screen_empty_subtitle),
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                            }
+                        }
+                    } else {
+                        LazyColumn(
+                            state = if (activeTabIndex == 0) userAppsListState else systemAppsListState,
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(top = 2.dp, bottom = 80.dp),
+                            verticalArrangement = Arrangement.spacedBy(2.dp)
+                        ) {
+                            itemsIndexed(
+                                items = displayedApps,
+                                key = { _, item -> item.packageName }
+                            ) { index, app ->
+                                val total = displayedApps.size
+                                val position = when {
+                                    total == 1 -> CardGroupPosition.SINGLE
+                                    index == 0 -> CardGroupPosition.FIRST
+                                    index == total - 1 -> CardGroupPosition.LAST
+                                    else -> CardGroupPosition.MIDDLE
+                                }
+
+                                InstalledAppCardItem(
+                                    app = app,
+                                    position = position,
+                                    onClick = { viewModel.selectInstalledApp(app) },
+                                    onLongClick = { selectedAppForOptions = app }
+                                )
+                            }
+                        }
                     }
                 }
             }
         }
+
+        FullScreenLoadingOverlay(
+            visible = isBackingUp
+        )
     }
 
     selectedAppForOptions?.let { app ->
+        @Suppress("DEPRECATION")
         val sheetState = rememberModalBottomSheetState()
         ModalBottomSheet(
             onDismissRequest = { selectedAppForOptions = null },
@@ -276,7 +328,7 @@ fun HomeScreen(viewModel: MainViewModel) {
                     color = MaterialTheme.colorScheme.onSurface
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(14.dp))
 
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -296,20 +348,12 @@ fun HomeScreen(viewModel: MainViewModel) {
                                 modifier = Modifier.size(48.dp)
                             )
                         } else {
-                            Surface(
-                                shape = CircleShape,
-                                color = MaterialTheme.colorScheme.primaryContainer,
+                            Icon(
+                                imageVector = Icons.Default.Android,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(48.dp)
-                            ) {
-                                Box(contentAlignment = Alignment.Center) {
-                                    Icon(
-                                        imageVector = Icons.Default.Android,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier.size(28.dp)
-                                    )
-                                }
-                            }
+                            )
                         }
 
                         Spacer(modifier = Modifier.width(14.dp))
@@ -317,17 +361,19 @@ fun HomeScreen(viewModel: MainViewModel) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = app.name,
-                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                                color = MaterialTheme.colorScheme.onSurface,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             Text(
                                 text = app.packageName,
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = "v${app.versionName} • ${app.formattedSize}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.secondary
                             )
                         }
                     }
@@ -339,17 +385,16 @@ fun HomeScreen(viewModel: MainViewModel) {
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
-                    val firstShape = getGroupedCardShape(CardGroupPosition.FIRST)
+                    val signShape = getGroupedCardShape(CardGroupPosition.FIRST)
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(firstShape)
+                            .clip(signShape)
                             .clickable {
-                                val targetApp = app
                                 selectedAppForOptions = null
-                                viewModel.selectInstalledApp(targetApp)
+                                viewModel.selectInstalledApp(app)
                             },
-                        shape = firstShape,
+                        shape = signShape,
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
                     ) {
                         Row(
@@ -358,7 +403,12 @@ fun HomeScreen(viewModel: MainViewModel) {
                                 .padding(16.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(imageVector = Icons.Default.TaskAlt, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                            Icon(
+                                imageVector = Icons.Default.TaskAlt,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(22.dp)
+                            )
                             Spacer(modifier = Modifier.width(14.dp))
                             Text(
                                 text = stringResource(R.string.home_screen_action_sign),
@@ -368,19 +418,34 @@ fun HomeScreen(viewModel: MainViewModel) {
                         }
                     }
 
-                    val middleShape = getGroupedCardShape(CardGroupPosition.MIDDLE)
+                    val extractShape = getGroupedCardShape(CardGroupPosition.MIDDLE)
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(middleShape)
+                            .clip(extractShape)
                             .clickable {
-                                val targetApp = app
                                 selectedAppForOptions = null
-                                appPendingBackup = targetApp
-                                val ext = if (targetApp.splitApkFiles.isNotEmpty()) "apks" else "apk"
-                                backupDocLauncher.launch("${targetApp.packageName}_backup.$ext")
+                                viewModel.backupInstalledApp(
+                                    appInfo = app,
+                                    onComplete = { success, result ->
+                                        if (success) {
+                                            val fileName = java.io.File(result).name
+                                            Toast.makeText(
+                                                context,
+                                                context.getString(R.string.home_screen_extracted_success, fileName),
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                context.getString(R.string.home_screen_extracted_fail),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+                                )
                             },
-                        shape = middleShape,
+                        shape = extractShape,
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
                     ) {
                         Row(
@@ -389,7 +454,12 @@ fun HomeScreen(viewModel: MainViewModel) {
                                 .padding(16.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(imageVector = Icons.Default.Backup, contentDescription = null, tint = MaterialTheme.colorScheme.secondary)
+                            Icon(
+                                imageVector = Icons.Default.Backup,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.secondary,
+                                modifier = Modifier.size(22.dp)
+                            )
                             Spacer(modifier = Modifier.width(14.dp))
                             Text(
                                 text = stringResource(R.string.home_screen_action_extract),
@@ -399,17 +469,16 @@ fun HomeScreen(viewModel: MainViewModel) {
                         }
                     }
 
-                    val lastShape = getGroupedCardShape(CardGroupPosition.LAST)
+                    val shareShape = getGroupedCardShape(CardGroupPosition.LAST)
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(lastShape)
+                            .clip(shareShape)
                             .clickable {
-                                val targetApp = app
                                 selectedAppForOptions = null
-                                viewModel.shareSourceApk(targetApp)
+                                viewModel.shareSourceApk(app)
                             },
-                        shape = lastShape,
+                        shape = shareShape,
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
                     ) {
                         Row(
@@ -418,7 +487,12 @@ fun HomeScreen(viewModel: MainViewModel) {
                                 .padding(16.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(imageVector = Icons.Default.Share, contentDescription = null, tint = MaterialTheme.colorScheme.tertiary)
+                            Icon(
+                                imageVector = Icons.Default.Share,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.tertiary,
+                                modifier = Modifier.size(22.dp)
+                            )
                             Spacer(modifier = Modifier.width(14.dp))
                             Text(
                                 text = stringResource(R.string.home_screen_action_share),
@@ -433,10 +507,19 @@ fun HomeScreen(viewModel: MainViewModel) {
             }
         }
     }
+
+    availableUpdate?.let { updateInfo ->
+        val updateSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        AppUpdateBottomSheet(
+            updateInfo = updateInfo,
+            sheetState = updateSheetState,
+            onDismiss = { viewModel.dismissUpdateSheet() }
+        )
+    }
 }
 
 /**
- * App list item card displaying app icon, title, package name, and non-clickable info badges.
+ * Fast item card component for installed application in user or system tabs.
  */
 @OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
@@ -447,6 +530,7 @@ private fun InstalledAppCardItem(
     onLongClick: () -> Unit
 ) {
     val cardShape = getGroupedCardShape(position)
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -494,7 +578,7 @@ private fun InstalledAppCardItem(
                 }
             }
 
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(14.dp))
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
@@ -504,8 +588,6 @@ private fun InstalledAppCardItem(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-
-                Spacer(modifier = Modifier.height(2.dp))
 
                 Text(
                     text = app.packageName,
@@ -518,52 +600,64 @@ private fun InstalledAppCardItem(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    InfoBadge(text = "v${app.versionName}")
-                    InfoBadge(text = app.formattedSize)
-                    if (app.isSystemApp) {
-                        InfoBadge(text = "System", isPrimary = true)
+                    Surface(
+                        shape = RoundedCornerShape(6.dp),
+                        color = MaterialTheme.colorScheme.secondaryContainer,
+                        modifier = Modifier.height(22.dp)
+                    ) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        ) {
+                            Text(
+                                text = "v${app.versionName}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                        }
                     }
+
+                    Surface(
+                        shape = RoundedCornerShape(6.dp),
+                        color = MaterialTheme.colorScheme.tertiaryContainer,
+                        modifier = Modifier.height(22.dp)
+                    ) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        ) {
+                            Text(
+                                text = app.formattedSize,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onTertiaryContainer
+                            )
+                        }
+                    }
+
                     if (app.splitApkFiles.isNotEmpty()) {
-                        InfoBadge(text = "APKS (${app.splitApkFiles.size + 1} splits)")
+                        Surface(
+                            shape = RoundedCornerShape(6.dp),
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            modifier = Modifier.height(22.dp)
+                        ) {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.padding(horizontal = 8.dp)
+                            ) {
+                                Text(
+                                    text = "Split (${app.splitApkFiles.size + 1})",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                            }
+                        }
                     }
                 }
             }
-        }
-    }
-}
-
-/**
- * Non-clickable badge surface used for displaying app metadata chips.
- */
-@Composable
-private fun InfoBadge(text: String, isPrimary: Boolean = false) {
-    Surface(
-        shape = RoundedCornerShape(6.dp),
-        color = if (isPrimary) {
-            MaterialTheme.colorScheme.primaryContainer
-        } else {
-            MaterialTheme.colorScheme.surfaceContainerHighest
-        },
-        modifier = Modifier.height(20.dp)
-    ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.padding(horizontal = 6.dp)
-        ) {
-            Text(
-                text = text,
-                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Medium),
-                color = if (isPrimary) {
-                    MaterialTheme.colorScheme.onPrimaryContainer
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
-                },
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
         }
     }
 }
@@ -575,6 +669,8 @@ private fun InfoBadge(text: String, isPrimary: Boolean = false) {
 @Composable
 fun HomeScreenPreview() {
     ApkSignerTheme {
-        Text("HomeScreen Preview")
+        Surface(modifier = Modifier.fillMaxSize()) {
+            Text("HomeScreen Preview", modifier = Modifier.padding(16.dp))
+        }
     }
 }

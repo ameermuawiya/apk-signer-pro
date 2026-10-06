@@ -37,6 +37,13 @@ data class KeystoreInspectionResult(
 )
 
 /**
+ * JKS KeyStore provider bridge for Android using BouncyCastle's internal JKS engine.
+ */
+class BcJksKeyStoreSpi : org.bouncycastle.jcajce.provider.keystore.util.JKSKeyStoreSpi(
+    org.bouncycastle.jcajce.util.BCJcaJceHelper()
+)
+
+/**
  * Robust manager for custom and default keystores handling JKS, PKCS12, BKS formats safely.
  */
 class KeystoreManager(private val context: Context) {
@@ -48,11 +55,48 @@ class KeystoreManager(private val context: Context) {
     private var sessionPasswordCache: String? = null
 
     /**
-     * Registers BouncyCastle security provider for full key algorithm support.
+     * Registers BouncyCastle security provider with BKS v1 and JKS support enabled.
      */
     private fun ensureBouncyCastle() {
-        if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
-            Security.addProvider(BouncyCastleProvider())
+        try {
+            System.setProperty("org.bouncycastle.bks.enable_v1", "true")
+        } catch (ignored: Exception) {}
+
+        val existingBc = Security.getProvider(BouncyCastleProvider.PROVIDER_NAME)
+        val bc = if (existingBc is BouncyCastleProvider) existingBc else BouncyCastleProvider()
+        try {
+            bc.put("KeyStore.JKS", BcJksKeyStoreSpi::class.java.name)
+        } catch (ignored: Exception) {}
+
+        Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME)
+        Security.insertProviderAt(bc, 1)
+    }
+
+    /**
+     * Inspects magic header bytes of keystore file to prioritize matching format.
+     */
+    private fun detectProbableKeystoreType(keyFile: File): String? {
+        if (!keyFile.exists() || keyFile.length() < 4) return null
+        return try {
+            FileInputStream(keyFile).use { fis ->
+                val b = ByteArray(4)
+                val read = fis.read(b)
+                if (read < 4) return null
+                val b0 = b[0].toInt() and 0xFF
+                val b1 = b[1].toInt() and 0xFF
+                val b2 = b[2].toInt() and 0xFF
+                val b3 = b[3].toInt() and 0xFF
+
+                when {
+                    b0 == 0xFE && b1 == 0xED && b2 == 0xFE && b3 == 0xED -> "JKS"
+                    b0 == 0xCE && b1 == 0xCE && b2 == 0xCE && b3 == 0xCE -> "JCEKS"
+                    b0 == 0x00 && b1 == 0x00 && b2 == 0x00 && (b3 == 0x01 || b3 == 0x02) -> "BKS"
+                    b0 == 0x30 && b1 == 0x82 -> "PKCS12"
+                    else -> null
+                }
+            }
+        } catch (ignored: Exception) {
+            null
         }
     }
 
@@ -69,25 +113,73 @@ class KeystoreManager(private val context: Context) {
     fun getSessionPassword(): String? = sessionPasswordCache
 
     /**
-     * Attempts loading a KeyStore from file testing PKCS12, JKS, BKS, and UBKS types cleanly.
+     * Attempts loading a KeyStore from file testing PKCS12, BKS, JKS, and standard formats cleanly.
      */
     fun loadKeyStoreWithType(keyFile: File, password: String): Pair<KeyStore, String> {
         ensureBouncyCastle()
-        val types = arrayOf("PKCS12", "JKS", "BKS", "BKS-V1", "UBER", "BCFKS", KeyStore.getDefaultType())
         val charPassword = password.toCharArray()
 
+        val bcProvider = Security.getProvider(BouncyCastleProvider.PROVIDER_NAME)
+        val providers: List<java.security.Provider?> = listOfNotNull(bcProvider) + listOf(null)
+
+        val probable = detectProbableKeystoreType(keyFile)
+        val types = buildList {
+            if (probable != null) {
+                add(probable)
+                if (probable == "BKS") add("BKS-V1")
+                if (probable == "PKCS12") add("BCFKS")
+            }
+            addAll(listOf("PKCS12", "BKS", "BKS-V1", "JKS", "BCFKS", "UBER", "BOUNCYCASTLE", "JCEKS"))
+            add(KeyStore.getDefaultType())
+        }.distinct()
+
         var lastException: Exception? = null
+        var passwordException: Exception? = null
+        var emptyKeystoreCandidate: Pair<KeyStore, String>? = null
+
         for (type in types) {
-            try {
-                FileInputStream(keyFile).use { fis ->
-                    val ks = KeyStore.getInstance(type)
-                    ks.load(fis, charPassword)
-                    return Pair(ks, type)
+            for (provider in providers) {
+                val ks = try {
+                    if (provider != null) KeyStore.getInstance(type, provider) else KeyStore.getInstance(type)
+                } catch (ignored: Exception) {
+                    continue
                 }
-            } catch (e: Exception) {
-                lastException = e
+
+                try {
+                    FileInputStream(keyFile).use { fis ->
+                        ks.load(fis, charPassword)
+                        if (ks.aliases().hasMoreElements()) {
+                            return Pair(ks, type)
+                        } else if (emptyKeystoreCandidate == null) {
+                            emptyKeystoreCandidate = Pair(ks, type)
+                        }
+                    }
+                } catch (e: Exception) {
+                    val msg = (e.message ?: "").lowercase(Locale.US)
+                    val causeMsg = (e.cause?.message ?: "").lowercase(Locale.US)
+                    val isPwErr = msg.contains("password") || msg.contains("mac") || msg.contains("tampered") ||
+                            msg.contains("unrecoverable") || msg.contains("incorrect") || msg.contains("badpadding") ||
+                            causeMsg.contains("password") || causeMsg.contains("mac") || causeMsg.contains("tampered")
+
+                    if (isPwErr) {
+                        if (passwordException == null) {
+                            passwordException = e
+                        }
+                    } else if (!msg.contains("not found") && !msg.contains("not available")) {
+                        lastException = e
+                    }
+                }
             }
         }
+
+        if (emptyKeystoreCandidate != null) {
+            return emptyKeystoreCandidate
+        }
+
+        if (passwordException != null) {
+            throw passwordException
+        }
+
         throw lastException ?: IllegalArgumentException("Unsupported keystore format or incorrect password.")
     }
 
