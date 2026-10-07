@@ -77,9 +77,13 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -87,6 +91,7 @@ import androidx.core.graphics.drawable.toBitmap
 import com.ameermuawiya.apksigner.R
 import com.ameermuawiya.apksigner.data.model.AppSignDetails
 import com.ameermuawiya.apksigner.ui.components.CardGroupPosition
+import com.ameermuawiya.apksigner.ui.components.CreateKeystoreBottomSheet
 import com.ameermuawiya.apksigner.ui.components.ErrorLoggerDialog
 import com.ameermuawiya.apksigner.ui.components.ExpressiveLoadingIndicator
 import com.ameermuawiya.apksigner.ui.components.KeystoreManagementSheet
@@ -126,6 +131,7 @@ fun SignPackageScreen(
     val customKeysList by settingsManager.customKeysList.collectAsState()
 
     val showKeystoreDialog by viewModel.showKeystoreDialog.collectAsState()
+    val showGenerateKeyDialog by viewModel.showGenerateKeyDialog.collectAsState()
 
     var showKeySheet by remember { mutableStateOf(false) }
     var showErrorDialog by remember { mutableStateOf(false) }
@@ -700,26 +706,26 @@ fun SignPackageScreen(
                     }
                 }
 
-                if (liveLogs.isNotEmpty()) {
-                    Spacer(modifier = Modifier.height(14.dp))
+                Spacer(modifier = Modifier.height(14.dp))
 
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(20.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
-                    ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.sign_package_screen_live_logs),
-                                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(20.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = stringResource(R.string.sign_package_screen_live_logs),
+                                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
 
+                            if (liveLogs.isNotEmpty()) {
                                 IconButton(
                                     onClick = {
                                         val fullLogs = liveLogs.joinToString("\n")
@@ -738,39 +744,86 @@ fun SignPackageScreen(
                                     )
                                 }
                             }
+                        }
 
-                            Spacer(modifier = Modifier.height(10.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
 
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .heightIn(max = 240.dp)
-                                    .background(
-                                        color = MaterialTheme.colorScheme.surfaceContainerLowest,
-                                        shape = RoundedCornerShape(12.dp)
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 100.dp, max = 240.dp)
+                                .background(
+                                    color = MaterialTheme.colorScheme.surfaceContainerLowest,
+                                    shape = RoundedCornerShape(12.dp)
+                                )
+                                .padding(12.dp)
+                        ) {
+                            if (liveLogs.isEmpty()) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 24.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.sign_package_screen_logs_empty),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                                        textAlign = TextAlign.Center
                                     )
-                                    .padding(12.dp)
-                            ) {
+                                }
+                            } else {
+                                val tagPattern = remember { Regex("^\\[([A-Za-z0-9_]+)\\]") }
                                 LazyColumn(state = logListState) {
                                     items(liveLogs) { log ->
-                                        val logColor = when {
-                                            log.startsWith("[SUCCESS]") || log.startsWith("[OK]") || log.contains("Verified", ignoreCase = true) -> Color(0xFF2E7D32)
-                                            log.startsWith("[ERROR]") || log.startsWith("[EXCEPTION]") -> Color(0xFFD32F2F)
-                                            log.startsWith("[STEP]") || log.startsWith("[CONFIG]") || log.startsWith("[LOCATION]") || log.startsWith("[OUTPUT]") -> MaterialTheme.colorScheme.primary
-                                            log.startsWith("[WARN]") -> Color(0xFFED6C02)
-                                            else -> MaterialTheme.colorScheme.onSurfaceVariant
+                                        val match = tagPattern.find(log)
+                                        if (match != null) {
+                                            val tagText = match.value
+                                            val restText = log.substring(match.range.last + 1)
+                                            val tagKey = match.groupValues[1].uppercase()
+                                            val tagColor = when {
+                                                tagKey in listOf("SUCCESS", "OK", "VERIFIED") -> Color(0xFF4CAF50)
+                                                tagKey in listOf("ERROR", "EXCEPTION", "FAIL", "FAILED") -> Color(0xFFEF5350)
+                                                tagKey in listOf("WARN", "WARNING") -> Color(0xFFFFA726)
+                                                tagKey in listOf("STEP") -> MaterialTheme.colorScheme.primary
+                                                tagKey in listOf("CONFIG", "LOCATION") -> MaterialTheme.colorScheme.tertiary
+                                                tagKey in listOf("OUTPUT", "INSPECT") -> MaterialTheme.colorScheme.secondary
+                                                else -> MaterialTheme.colorScheme.primary
+                                            }
+                                            val restColor = when {
+                                                tagKey in listOf("ERROR", "EXCEPTION", "FAIL") -> MaterialTheme.colorScheme.error
+                                                tagKey in listOf("SUCCESS", "OK") -> Color(0xFF388E3C)
+                                                else -> MaterialTheme.colorScheme.onSurface
+                                            }
+                                            val annotated = buildAnnotatedString {
+                                                withStyle(SpanStyle(color = tagColor, fontWeight = FontWeight.Bold)) {
+                                                    append(tagText)
+                                                }
+                                                withStyle(SpanStyle(color = restColor)) {
+                                                    append(restText)
+                                                }
+                                            }
+                                            Text(
+                                                text = annotated,
+                                                style = MaterialTheme.typography.bodySmall.copy(
+                                                    fontFamily = FontFamily.Monospace,
+                                                    fontSize = 11.sp,
+                                                    lineHeight = 16.sp
+                                                ),
+                                                modifier = Modifier.padding(vertical = 1.dp)
+                                            )
+                                        } else {
+                                            Text(
+                                                text = log,
+                                                style = MaterialTheme.typography.bodySmall.copy(
+                                                    fontFamily = FontFamily.Monospace,
+                                                    fontSize = 11.sp,
+                                                    lineHeight = 16.sp
+                                                ),
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                modifier = Modifier.padding(vertical = 1.dp)
+                                            )
                                         }
-
-                                        Text(
-                                            text = log,
-                                            style = MaterialTheme.typography.bodySmall.copy(
-                                                fontFamily = FontFamily.Monospace,
-                                                fontSize = 11.sp,
-                                                lineHeight = 16.sp
-                                            ),
-                                            color = logColor,
-                                            modifier = Modifier.padding(vertical = 1.dp)
-                                        )
                                     }
                                 }
                             }
@@ -783,6 +836,7 @@ fun SignPackageScreen(
         }
 
         if (showKeySheet) {
+            @Suppress("DEPRECATION")
             val sheetState = rememberModalBottomSheetState()
             KeystoreManagementSheet(
                 activeKeyPath = customKeyPath,
@@ -798,7 +852,20 @@ fun SignPackageScreen(
                     showKeySheet = false
                     viewModel.openKeyPickerDialog()
                 },
+                onCreateKeyClick = {
+                    showKeySheet = false
+                    viewModel.openGenerateKeyDialog()
+                },
                 onDismiss = { showKeySheet = false }
+            )
+        }
+
+        if (showGenerateKeyDialog) {
+            CreateKeystoreBottomSheet(
+                onGenerate = { params, callback ->
+                    viewModel.generateKeystore(params, callback)
+                },
+                onDismiss = { viewModel.dismissGenerateKeyDialog() }
             )
         }
 

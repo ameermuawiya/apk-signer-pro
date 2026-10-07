@@ -10,6 +10,8 @@ import androidx.lifecycle.viewModelScope
 import com.ameermuawiya.apksigner.BuildConfig
 import com.ameermuawiya.apksigner.data.db.AppDatabase
 import com.ameermuawiya.apksigner.data.db.HistoryEntity
+import com.ameermuawiya.apksigner.data.keystore.KeystoreGenParams
+import com.ameermuawiya.apksigner.data.keystore.KeystoreGenerator
 import com.ameermuawiya.apksigner.data.keystore.KeystoreInspectionResult
 import com.ameermuawiya.apksigner.data.keystore.KeystoreManager
 import com.ameermuawiya.apksigner.data.model.AppSignDetails
@@ -23,6 +25,7 @@ import com.ameermuawiya.apksigner.engine.ApkSignerEngineWrapper
 import com.ameermuawiya.apksigner.utils.InstallerHelper
 import com.ameermuawiya.apksigner.utils.NotificationHelper
 import com.ameermuawiya.apksigner.utils.SignatureDetector
+import com.ameermuawiya.apksigner.utils.UpdateCheckResult
 import com.ameermuawiya.apksigner.utils.UpdateChecker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -113,8 +116,16 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _showKeystoreDialog = MutableStateFlow(false)
     val showKeystoreDialog: StateFlow<Boolean> = _showKeystoreDialog.asStateFlow()
 
+    private val _showGenerateKeyDialog = MutableStateFlow(false)
+    val showGenerateKeyDialog: StateFlow<Boolean> = _showGenerateKeyDialog.asStateFlow()
+
+    private val _isCheckingUpdates = MutableStateFlow(false)
+    val isCheckingUpdates: StateFlow<Boolean> = _isCheckingUpdates.asStateFlow()
+
     private val _availableUpdate = MutableStateFlow<AppUpdateInfo?>(null)
     val availableUpdate: StateFlow<AppUpdateInfo?> = _availableUpdate.asStateFlow()
+
+    private var hasAutoCheckedUpdates = false
 
     private var isTaskCancelled = false
 
@@ -186,7 +197,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         loadInstalledApps()
-        checkForUpdates()
     }
 
     /**
@@ -203,6 +213,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             _installedApps.value = apps
             _isAppsLoading.value = false
             _isAppsRefreshing.value = false
+            if (!isPullToRefresh) {
+                checkForUpdates()
+            }
         }
     }
 
@@ -220,12 +233,95 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     /**
-     * Checks remote GitHub repository for new application updates.
+     * Checks remote GitHub repository for application updates once per session.
      */
     fun checkForUpdates() {
+        if (hasAutoCheckedUpdates) return
+        hasAutoCheckedUpdates = true
         viewModelScope.launch(Dispatchers.IO) {
+            kotlinx.coroutines.delay(600)
             val update = UpdateChecker.checkLatestUpdate(BuildConfig.VERSION_NAME)
-            _availableUpdate.value = update
+            if (update != null) {
+                _availableUpdate.value = update
+            }
+        }
+    }
+
+    /**
+     * Performs explicit update check and delivers result state to caller.
+     */
+    fun checkForUpdatesManual(onResult: (UpdateCheckResult) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _isCheckingUpdates.value = true
+            val result = UpdateChecker.checkLatestUpdateDetailed(BuildConfig.VERSION_NAME)
+            if (result is UpdateCheckResult.Available) {
+                _availableUpdate.value = result.updateInfo
+            }
+            _isCheckingUpdates.value = false
+            withContext(Dispatchers.Main) {
+                onResult(result)
+            }
+        }
+    }
+
+    /**
+     * Opens keystore creation dialog.
+     */
+    fun openGenerateKeyDialog() {
+        _showGenerateKeyDialog.value = true
+    }
+
+    /**
+     * Closes keystore creation dialog.
+     */
+    fun dismissGenerateKeyDialog() {
+        _showGenerateKeyDialog.value = false
+    }
+
+    /**
+     * Generates a new cryptographic keystore on disk and registers it.
+     */
+    fun generateKeystore(
+        params: KeystoreGenParams,
+        onResult: (Boolean, String?) -> Unit
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val workingDir = settingsManager.workingDirectoryPath.value
+                val generated = KeystoreGenerator.generateKeystore(getApplication(), params, workingDir)
+                val record = CustomKeyRecord(
+                    id = "key_${System.currentTimeMillis()}",
+                    name = params.commonName.ifBlank { params.alias },
+                    path = generated.file.absolutePath,
+                    alias = generated.alias,
+                    format = generated.format,
+                    details = generated.summary
+                )
+                settingsManager.addCustomKeyRecord(record, params.password)
+                notificationHelper.showKeystoreCreatedNotification(
+                    title = "Keystore Generated",
+                    message = "Saved at: ${generated.file.absolutePath}"
+                )
+                withContext(Dispatchers.Main) {
+                    _showGenerateKeyDialog.value = false
+                    onResult(true, null)
+                }
+            } catch (e: Exception) {
+                val detail = buildString {
+                    append(e.javaClass.simpleName).append(": ").append(e.message)
+                    var cause = e.cause
+                    while (cause != null) {
+                        append("\nCaused by: ").append(cause.javaClass.simpleName)
+                        if (cause.message != null) {
+                            append(": ").append(cause.message)
+                        }
+                        cause = cause.cause
+                    }
+                }
+                withContext(Dispatchers.Main) {
+                    onResult(false, detail)
+                }
+            }
         }
     }
 

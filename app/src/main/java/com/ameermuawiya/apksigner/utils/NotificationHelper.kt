@@ -19,6 +19,7 @@ class NotificationHelper(private val context: Context) {
         private const val CHANNEL_ID = "apk_signer_completion_channel"
         private const val SIGNING_NOTIFICATION_ID = 1001
         private const val INSTALL_NOTIFICATION_ID = 1002
+        private const val KEYSTORE_NOTIFICATION_ID = 1003
     }
 
     init {
@@ -107,5 +108,34 @@ class NotificationHelper(private val context: Context) {
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(INSTALL_NOTIFICATION_ID, builder.build())
+    }
+
+    /**
+     * Displays notification when a new keystore has been successfully generated.
+     */
+    fun showKeystoreCreatedNotification(title: String, message: String) {
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            KEYSTORE_NOTIFICATION_ID,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(message))
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(KEYSTORE_NOTIFICATION_ID, builder.build())
     }
 }

@@ -22,25 +22,25 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Brightness4
+import androidx.compose.material.icons.filled.ColorLens
+import androidx.compose.material.icons.filled.Draw
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Key
+import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.filled.SystemUpdate
+import androidx.compose.material.icons.filled.VpnKey
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
@@ -57,6 +57,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -65,12 +67,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ameermuawiya.apksigner.BuildConfig
 import com.ameermuawiya.apksigner.R
 import com.ameermuawiya.apksigner.ui.components.CardGroupPosition
+import com.ameermuawiya.apksigner.ui.components.CreateKeystoreBottomSheet
+import com.ameermuawiya.apksigner.ui.components.KeystoreManagementSheet
 import com.ameermuawiya.apksigner.ui.components.KeystorePasswordDialog
 import com.ameermuawiya.apksigner.ui.components.getGroupedCardShape
 import com.ameermuawiya.apksigner.ui.theme.ApkSignerTheme
 import com.ameermuawiya.apksigner.ui.viewmodel.MainViewModel
+import com.ameermuawiya.apksigner.utils.UpdateCheckResult
 import java.io.File
 
 /**
@@ -94,6 +100,7 @@ fun SettingsScreen(viewModel: MainViewModel) {
     val customKeysList by settingsManager.customKeysList.collectAsState()
 
     val showKeystoreDialog by viewModel.showKeystoreDialog.collectAsState()
+    val showGenerateKeyDialog by viewModel.showGenerateKeyDialog.collectAsState()
 
     var showKeySheet by remember { mutableStateOf(false) }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -154,12 +161,29 @@ fun SettingsScreen(viewModel: MainViewModel) {
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            text = stringResource(R.string.settings_screen_theme_mode),
-                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Spacer(modifier = Modifier.height(10.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Surface(
+                                shape = CircleShape,
+                                color = MaterialTheme.colorScheme.primaryContainer,
+                                modifier = Modifier.size(40.dp)
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Icon(
+                                        imageVector = Icons.Default.Brightness4,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.width(14.dp))
+                            Text(
+                                text = stringResource(R.string.settings_screen_theme_mode),
+                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(12.dp))
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             modifier = Modifier.fillMaxWidth()
@@ -209,7 +233,8 @@ fun SettingsScreen(viewModel: MainViewModel) {
                     subtitle = stringResource(R.string.settings_screen_dynamic_color_sub),
                     checked = dynamicColor,
                     onCheckedChange = { settingsManager.setDynamicColor(it) },
-                    position = CardGroupPosition.LAST
+                    position = CardGroupPosition.LAST,
+                    icon = Icons.Default.ColorLens
                 )
             }
 
@@ -221,61 +246,30 @@ fun SettingsScreen(viewModel: MainViewModel) {
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
-                val singleShape = getGroupedCardShape(CardGroupPosition.SINGLE)
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(singleShape)
-                        .clickable { showKeySheet = true },
-                    shape = singleShape,
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Surface(
-                            shape = CircleShape,
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            modifier = Modifier.size(40.dp)
-                        ) {
-                            Box(contentAlignment = Alignment.Center) {
-                                Icon(
-                                    imageVector = Icons.Default.Key,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.width(14.dp))
-
-                        val activeRecord = if (!customKeyPath.isNullOrBlank()) customKeysList.find { it.path == customKeyPath } else null
-                        val hasCustomTitle = !activeRecord?.name.isNullOrBlank()
-
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = stringResource(R.string.settings_screen_active_key),
-                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                            Spacer(modifier = Modifier.height(2.dp))
-                            Text(
-                                text = if (activeRecord != null) {
-                                    if (hasCustomTitle) "${activeRecord.name} (Alias: ${activeRecord.alias} • ${activeRecord.format})"
-                                    else "${activeRecord.alias} (${activeRecord.format})"
-                                } else {
-                                    "Built-in Debug Key (androiddebugkey • JKS)"
-                                },
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
+                val activeRecord = if (!customKeyPath.isNullOrBlank()) customKeysList.find { it.path == customKeyPath } else null
+                val hasCustomTitle = !activeRecord?.name.isNullOrBlank()
+                val activeKeyDesc = if (activeRecord != null) {
+                    if (hasCustomTitle) "${activeRecord.name} (Alias: ${activeRecord.alias} • ${activeRecord.format})"
+                    else "${activeRecord.alias} (${activeRecord.format})"
+                } else {
+                    stringResource(R.string.settings_screen_key_default)
                 }
+
+                SettingClickableCardRow(
+                    title = stringResource(R.string.settings_screen_active_key),
+                    subtitle = activeKeyDesc,
+                    onClick = { showKeySheet = true },
+                    position = CardGroupPosition.FIRST,
+                    icon = Icons.Default.Key
+                )
+
+                SettingClickableCardRow(
+                    title = stringResource(R.string.settings_screen_key_create),
+                    subtitle = stringResource(R.string.settings_screen_key_create_desc),
+                    onClick = { viewModel.openGenerateKeyDialog() },
+                    position = CardGroupPosition.LAST,
+                    icon = Icons.Default.VpnKey
+                )
             }
 
             Spacer(modifier = Modifier.height(18.dp))
@@ -291,7 +285,8 @@ fun SettingsScreen(viewModel: MainViewModel) {
                     subtitle = stringResource(R.string.settings_screen_v1_sub),
                     checked = v1,
                     onCheckedChange = { settingsManager.setV1Scheme(it) },
-                    position = CardGroupPosition.FIRST
+                    position = CardGroupPosition.FIRST,
+                    icon = Icons.Default.Draw
                 )
 
                 SettingCardRow(
@@ -299,7 +294,8 @@ fun SettingsScreen(viewModel: MainViewModel) {
                     subtitle = stringResource(R.string.settings_screen_v2_sub),
                     checked = v2,
                     onCheckedChange = { settingsManager.setV2Scheme(it) },
-                    position = CardGroupPosition.MIDDLE
+                    position = CardGroupPosition.MIDDLE,
+                    icon = Icons.Default.Draw
                 )
 
                 SettingCardRow(
@@ -307,7 +303,8 @@ fun SettingsScreen(viewModel: MainViewModel) {
                     subtitle = stringResource(R.string.settings_screen_v3_sub),
                     checked = v3,
                     onCheckedChange = { settingsManager.setV3Scheme(it) },
-                    position = CardGroupPosition.MIDDLE
+                    position = CardGroupPosition.MIDDLE,
+                    icon = Icons.Default.Draw
                 )
 
                 SettingCardRow(
@@ -315,7 +312,8 @@ fun SettingsScreen(viewModel: MainViewModel) {
                     subtitle = stringResource(R.string.settings_screen_v4_sub),
                     checked = v4,
                     onCheckedChange = { settingsManager.setV4Scheme(it) },
-                    position = CardGroupPosition.LAST
+                    position = CardGroupPosition.LAST,
+                    icon = Icons.Default.Draw
                 )
             }
 
@@ -327,112 +325,24 @@ fun SettingsScreen(viewModel: MainViewModel) {
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
-                val firstCardShape = getGroupedCardShape(CardGroupPosition.FIRST)
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(firstCardShape)
-                        .clickable { folderPickerLauncher.launch(null) },
-                    shape = firstCardShape,
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Surface(
-                            shape = CircleShape,
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            modifier = Modifier.size(40.dp)
-                        ) {
-                            Box(contentAlignment = Alignment.Center) {
-                                Icon(
-                                    imageVector = Icons.Default.Folder,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            }
-                        }
+                SettingClickableCardRow(
+                    title = stringResource(R.string.settings_screen_working_dir_title),
+                    subtitle = workingDir,
+                    onClick = { folderPickerLauncher.launch(null) },
+                    position = CardGroupPosition.FIRST,
+                    icon = Icons.Default.Folder
+                )
 
-                        Spacer(modifier = Modifier.width(14.dp))
-
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = stringResource(R.string.settings_screen_working_dir_title),
-                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                            Spacer(modifier = Modifier.height(2.dp))
-                            Text(
-                                text = workingDir,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.primary,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = stringResource(R.string.settings_screen_working_dir_desc),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-                }
-
-                val lastCardShape = getGroupedCardShape(CardGroupPosition.LAST)
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(lastCardShape)
-                        .clickable {
-                            settingsManager.resetWorkingDirectory()
-                            Toast.makeText(context, context.getString(R.string.settings_screen_working_dir_custom_set), Toast.LENGTH_SHORT).show()
-                        },
-                    shape = lastCardShape,
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Surface(
-                            shape = CircleShape,
-                            color = MaterialTheme.colorScheme.secondaryContainer,
-                            modifier = Modifier.size(40.dp)
-                        ) {
-                            Box(contentAlignment = Alignment.Center) {
-                                Icon(
-                                    imageVector = Icons.Default.Refresh,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.secondary,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.width(14.dp))
-
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = stringResource(R.string.settings_screen_working_dir_reset_title),
-                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                            Spacer(modifier = Modifier.height(2.dp))
-                            Text(
-                                text = stringResource(R.string.settings_screen_working_dir_reset_sub),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-                }
+                SettingClickableCardRow(
+                    title = stringResource(R.string.settings_screen_working_dir_reset_title),
+                    subtitle = stringResource(R.string.settings_screen_working_dir_reset_sub),
+                    onClick = {
+                        settingsManager.resetWorkingDirectory()
+                        Toast.makeText(context, context.getString(R.string.settings_screen_working_dir_custom_set), Toast.LENGTH_SHORT).show()
+                    },
+                    position = CardGroupPosition.LAST,
+                    icon = Icons.Default.Refresh
+                )
             }
 
             Spacer(modifier = Modifier.height(18.dp))
@@ -443,99 +353,78 @@ fun SettingsScreen(viewModel: MainViewModel) {
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = getGroupedCardShape(CardGroupPosition.SINGLE),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            text = stringResource(R.string.settings_screen_about_title),
-                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                            color = MaterialTheme.colorScheme.onSurface
+                SettingClickableCardRow(
+                    title = stringResource(R.string.settings_screen_about_github_title),
+                    subtitle = stringResource(R.string.settings_screen_about_github_sub),
+                    onClick = {
+                        val intent = Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("https://github.com/ameermuawiya/apk-signer-pro")
                         )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = stringResource(R.string.settings_screen_about_sub),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        context.startActivity(intent)
+                    },
+                    position = CardGroupPosition.FIRST,
+                    iconPainter = painterResource(R.drawable.ic_github)
+                )
+
+                SettingClickableCardRow(
+                    title = stringResource(R.string.settings_screen_about_telegram_title),
+                    subtitle = stringResource(R.string.settings_screen_about_telegram_sub),
+                    onClick = {
+                        val intent = Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("https://t.me/itx_muawiya")
                         )
+                        context.startActivity(intent)
+                    },
+                    position = CardGroupPosition.MIDDLE,
+                    iconPainter = painterResource(R.drawable.ic_telegram)
+                )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                SettingClickableCardRow(
+                    title = stringResource(R.string.settings_screen_about_coffee_title),
+                    subtitle = stringResource(R.string.settings_screen_about_coffee_sub),
+                    onClick = {
+                        val intent = Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("https://www.patreon.com/ameermuawiyapk/posts/buy-me-coffee-16891048")
+                        )
+                        context.startActivity(intent)
+                    },
+                    position = CardGroupPosition.MIDDLE,
+                    iconPainter = painterResource(R.drawable.ic_coffee)
+                )
 
-                        Button(
-                            onClick = {
-                                val intent = Intent(
-                                    Intent.ACTION_VIEW,
-                                    Uri.parse("https://www.patreon.com/ameermuawiyapk/posts/buy-me-coffee-168910489")
-                                )
-                                context.startActivity(intent)
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_coffee),
-                                contentDescription = null,
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(text = stringResource(R.string.settings_screen_btn_buy_coffee))
+                SettingClickableCardRow(
+                    title = stringResource(R.string.settings_screen_about_update_title),
+                    subtitle = stringResource(R.string.settings_screen_about_update_sub, BuildConfig.VERSION_NAME),
+                    onClick = {
+                        Toast.makeText(context, context.getString(R.string.settings_screen_update_checking), Toast.LENGTH_SHORT).show()
+                        viewModel.checkForUpdatesManual { result ->
+                            when (result) {
+                                is UpdateCheckResult.Available -> {
+                                    // Update sheet opens automatically through StateFlow
+                                }
+                                is UpdateCheckResult.UpToDate -> {
+                                    Toast.makeText(
+                                        context,
+                                        context.getString(R.string.settings_screen_update_up_to_date, BuildConfig.VERSION_NAME),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                                is UpdateCheckResult.Error -> {
+                                    Toast.makeText(
+                                        context,
+                                        context.getString(R.string.settings_screen_update_error),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
                         }
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Button(
-                            onClick = {
-                                val intent = Intent(
-                                    Intent.ACTION_VIEW,
-                                    Uri.parse("https://t.me/itx_muawiya")
-                                )
-                                context.startActivity(intent)
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(12.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_telegram),
-                                contentDescription = null,
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(text = stringResource(R.string.settings_screen_btn_telegram))
-                        }
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Button(
-                            onClick = {
-                                val intent = Intent(
-                                    Intent.ACTION_VIEW,
-                                    Uri.parse("https://github.com/ameermuawiya/apksigner-m3-expressive")
-                                )
-                                context.startActivity(intent)
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_github),
-                                contentDescription = null,
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(text = stringResource(R.string.settings_screen_btn_github_repo))
-                        }
-                    }
-                }
+                    },
+                    position = CardGroupPosition.LAST,
+                    icon = Icons.Default.SystemUpdate
+                )
             }
         }
     }
@@ -543,7 +432,7 @@ fun SettingsScreen(viewModel: MainViewModel) {
     if (showKeySheet) {
         @Suppress("DEPRECATION")
         val sheetState = rememberModalBottomSheetState()
-        com.ameermuawiya.apksigner.ui.components.KeystoreManagementSheet(
+        KeystoreManagementSheet(
             activeKeyPath = customKeyPath,
             customKeysList = customKeysList,
             sheetState = sheetState,
@@ -556,6 +445,10 @@ fun SettingsScreen(viewModel: MainViewModel) {
             onAddKeyClick = {
                 showKeySheet = false
                 viewModel.openKeyPickerDialog()
+            },
+            onCreateKeyClick = {
+                showKeySheet = false
+                viewModel.openGenerateKeyDialog()
             },
             onDismiss = { showKeySheet = false }
         )
@@ -570,6 +463,15 @@ fun SettingsScreen(viewModel: MainViewModel) {
                 viewModel.saveCustomKeystore(path, alias, format, details, password, customTitle)
             },
             onDismiss = { viewModel.dismissKeystoreDialog() }
+        )
+    }
+
+    if (showGenerateKeyDialog) {
+        CreateKeystoreBottomSheet(
+            onGenerate = { params, callback ->
+                viewModel.generateKeystore(params, callback)
+            },
+            onDismiss = { viewModel.dismissGenerateKeyDialog() }
         )
     }
 }
@@ -596,7 +498,8 @@ private fun SettingCardRow(
     subtitle: String,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
-    position: CardGroupPosition
+    position: CardGroupPosition,
+    icon: ImageVector? = null
 ) {
     val cardShape = getGroupedCardShape(position)
     Card(
@@ -613,6 +516,24 @@ private fun SettingCardRow(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            if (icon != null) {
+                Surface(
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.width(14.dp))
+            }
+
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = title,
@@ -630,6 +551,79 @@ private fun SettingCardRow(
                 checked = checked,
                 onCheckedChange = onCheckedChange
             )
+        }
+    }
+}
+
+/**
+ * Reusable clickable card row for settings navigation and actions.
+ */
+@Composable
+private fun SettingClickableCardRow(
+    title: String,
+    subtitle: String,
+    onClick: () -> Unit,
+    position: CardGroupPosition,
+    icon: ImageVector? = null,
+    iconPainter: Painter? = null
+) {
+    val cardShape = getGroupedCardShape(position)
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(cardShape)
+            .clickable { onClick() },
+        shape = cardShape,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (icon != null || iconPainter != null) {
+                Surface(
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        if (icon != null) {
+                            Icon(
+                                imageVector = icon,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        } else if (iconPainter != null) {
+                            Icon(
+                                painter = iconPainter,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.width(14.dp))
+            }
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
     }
 }

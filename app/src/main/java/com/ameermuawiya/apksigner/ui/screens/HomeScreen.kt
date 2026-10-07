@@ -79,7 +79,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import com.ameermuawiya.apksigner.R
 import com.ameermuawiya.apksigner.data.model.InstalledAppInfo
-import com.ameermuawiya.apksigner.ui.components.AppUpdateBottomSheet
 import com.ameermuawiya.apksigner.ui.components.CardGroupPosition
 import com.ameermuawiya.apksigner.ui.components.ExpressiveLoadingIndicator
 import com.ameermuawiya.apksigner.ui.components.ExpressivePullToRefreshBox
@@ -101,7 +100,6 @@ fun HomeScreen(viewModel: MainViewModel) {
     val isBackingUp by viewModel.isBackingUp.collectAsState()
     val searchQuery by viewModel.searchQueryHome.collectAsState()
     val activeTabIndex by viewModel.homeTabIndex.collectAsState()
-    val availableUpdate by viewModel.availableUpdate.collectAsState()
 
     var selectedAppForOptions by remember { mutableStateOf<InstalledAppInfo?>(null) }
 
@@ -506,15 +504,6 @@ fun HomeScreen(viewModel: MainViewModel) {
                 Spacer(modifier = Modifier.height(24.dp))
             }
         }
-    }
-
-    availableUpdate?.let { updateInfo ->
-        val updateSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-        AppUpdateBottomSheet(
-            updateInfo = updateInfo,
-            sheetState = updateSheetState,
-            onDismiss = { viewModel.dismissUpdateSheet() }
-        )
     }
 }
 

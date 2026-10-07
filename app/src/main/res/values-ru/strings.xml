@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">APK Signer Pro</string>
-
-    <string name="main_activity_permission_notifications">Требуется разрешение на отправку уведомлений для оповещений о подписи.</string>
-
     <string name="nav_container_home">Главная</string>
     <string name="nav_container_history">История</string>
     <string name="nav_container_settings">Настройки</string>
-
     <string name="home_screen_title">APK Signer</string>
     <string name="home_screen_select_file">Выбрать APK / APKS / XAPK</string>
     <string name="home_screen_tab_user_apps">Пользовательские</string>
@@ -21,13 +17,11 @@
     <string name="home_screen_action_share">Поделиться APK</string>
     <string name="home_screen_extracted_success">Резервная копия сохранена:\n%1$s</string>
     <string name="home_screen_extracted_fail">Не удалось создать резервную копию</string>
-
     <string name="sign_package_screen_title">Подпись приложения</string>
     <string name="sign_package_screen_detected_sig">Обнаруженная подпись</string>
     <string name="sign_package_screen_unsigned">Не подписано</string>
     <string name="sign_package_screen_config">Конфигурация подписи</string>
     <string name="sign_package_screen_key_default">Встроенный Debug ключ</string>
-    <string name="sign_package_screen_key_default_desc">Alias: androiddebugkey</string>
     <string name="sign_package_screen_change">Изменить</string>
     <string name="sign_package_screen_schemes">Схемы подписи</string>
     <string name="sign_package_screen_v1">v1</string>
@@ -35,7 +29,6 @@
     <string name="sign_package_screen_v3">v3</string>
     <string name="sign_package_screen_v4">v4</string>
     <string name="sign_package_screen_sign_now">Подписать пакет сейчас</string>
-    <string name="sign_package_screen_cancel">Отмена</string>
     <string name="sign_package_screen_success_title">Подпись успешно завершена</string>
     <string name="sign_package_screen_success_msg">Сохранено в:\n%1$s</string>
     <string name="sign_package_screen_install">Установить APK</string>
@@ -45,12 +38,11 @@
     <string name="sign_package_screen_view_error_log">Журнал ошибок</string>
     <string name="sign_package_screen_retry">Повторить подпись</string>
     <string name="sign_package_screen_live_logs">Журнал выполнения в реальном времени</string>
+    <string name="sign_package_screen_logs_empty">Журналы выполнения еще не записаны</string>
     <string name="sign_package_screen_copy_logs">Копировать журнал</string>
     <string name="sign_package_screen_logs_copied">Журнал скопирован в буфер обмена</string>
-    <string name="sign_package_screen_add_custom_key">Добавить свое хранилище ключей</string>
     <string name="sign_package_screen_delete_key">Удалить ключ</string>
     <string name="sign_package_screen_back_desc">Назад</string>
-
     <string name="history_screen_title">История подписей</string>
     <string name="history_screen_search_hint">Поиск в истории...</string>
     <string name="history_screen_empty_title">Нет подписанных файлов</string>
@@ -65,10 +57,8 @@
     <string name="history_screen_delete_file_checkbox">Также удалить подписанный файл с устройства</string>
     <string name="history_screen_confirm_delete">Удалить</string>
     <string name="history_screen_cancel">Отмена</string>
-    <string name="history_screen_file_missing">Файл отсутствует</string>
     <string name="history_screen_installed_badge">Установлено</string>
     <string name="history_screen_key_chip">Ключ: %1$s</string>
-
     <string name="settings_screen_title">Настройки</string>
     <string name="settings_screen_cat_appearance">Внешний вид</string>
     <string name="settings_screen_theme_mode">Режим темы</string>
@@ -77,12 +67,11 @@
     <string name="settings_screen_theme_dark">Темная</string>
     <string name="settings_screen_dynamic_color">Динамические цвета</string>
     <string name="settings_screen_dynamic_color_sub">Акцентные цвета из обоев Material You</string>
-
     <string name="settings_screen_cat_key_mgmt">Управление ключами</string>
     <string name="settings_screen_active_key">Активный ключ подписи</string>
     <string name="settings_screen_key_default">Встроенный Debug ключ</string>
-    <string name="settings_screen_key_manage">Управление своими ключами</string>
-
+    <string name="settings_screen_key_create">Создать новый Keystore</string>
+    <string name="settings_screen_key_create_desc">Сгенерировать ключ подписи с выбранным алгоритмом</string>
     <string name="settings_screen_cat_schemes">Схемы подписи по умолчанию</string>
     <string name="settings_screen_v1_title">Схема v1</string>
     <string name="settings_screen_v1_sub">Совместимость с Android 4.4 и старше</string>
@@ -92,32 +81,73 @@
     <string name="settings_screen_v3_sub">Поддержка ротации ключей для Android 9.0 и новее</string>
     <string name="settings_screen_v4_title">Схема v4</string>
     <string name="settings_screen_v4_sub">Отдельный файл потоковой подписи для Android 11.0 и новее</string>
-
     <string name="settings_screen_cat_storage">Хранилище и рабочая папка</string>
     <string name="settings_screen_working_dir_title">Рабочая папка</string>
-    <string name="settings_screen_working_dir_desc">Нажмите для выбора пользовательской папки</string>
     <string name="settings_screen_working_dir_reset_title">Сбросить рабочую папку</string>
     <string name="settings_screen_working_dir_reset_sub">Восстановить стандартную папку Download/APK Signer Pro</string>
     <string name="settings_screen_working_dir_custom_set">Рабочая папка обновлена</string>
-
     <string name="settings_screen_cat_about">О приложении</string>
-    <string name="settings_screen_about_title">APK Signer</string>
     <string name="settings_screen_about_sub">Современный инструмент подписи APK в стиле Material 3 Expressive</string>
-    <string name="settings_screen_btn_buy_coffee">Угостить кофе</string>
-    <string name="settings_screen_btn_telegram">Telegram</string>
-    <string name="settings_screen_btn_github_repo">Репозиторий GitHub</string>
-
+    <string name="settings_screen_about_github_title">Репозиторий GitHub</string>
+    <string name="settings_screen_about_github_sub">Исходный код, отчёты об ошибках и релизы</string>
+    <string name="settings_screen_about_telegram_title">Контакт в Telegram</string>
+    <string name="settings_screen_about_telegram_sub">Связаться с разработчиком напрямую в Telegram</string>
+    <string name="settings_screen_about_coffee_title">Угостить кофе</string>
+    <string name="settings_screen_about_coffee_sub">Поддержать дальнейшую разработку</string>
+    <string name="settings_screen_about_update_title">Проверить обновления</string>
+    <string name="settings_screen_about_update_sub">Установленная версия: %1$s</string>
+    <string name="settings_screen_update_checking">Проверка обновлений...</string>
+    <string name="settings_screen_update_up_to_date">У вас установлена последняя версия (%1$s)</string>
+    <string name="settings_screen_update_error">Не удалось проверить обновления. Проверьте интернет.</string>
+    <string name="create_keystore_sheet_title">Создать новое хранилище ключей</string>
+    <string name="create_keystore_sheet_cat_file">Файл хранилища и безопасность</string>
+    <string name="create_keystore_sheet_filename">Имя файла *</string>
+    <string name="create_keystore_sheet_hint_filename">release_key</string>
+    <string name="create_keystore_sheet_format">Формат</string>
+    <string name="create_keystore_sheet_password">Пароль хранилища *</string>
+    <string name="create_keystore_sheet_hint_password">Мин. 6 символов</string>
+    <string name="create_keystore_sheet_confirm_password">Подтвердите пароль *</string>
+    <string name="create_keystore_sheet_hint_confirm_password">Подтвердите пароль</string>
+    <string name="create_keystore_sheet_cat_key">Параметры ключа</string>
+    <string name="create_keystore_sheet_alias">Псевдоним ключа *</string>
+    <string name="create_keystore_sheet_hint_alias">key0</string>
+    <string name="create_keystore_sheet_algorithm">Алгоритм и размер ключа</string>
+    <string name="create_keystore_sheet_validity_years">Срок действия: %1$d лет</string>
+    <string name="create_keystore_sheet_pick_date">Выбрать дату истечения</string>
+    <string name="create_keystore_sheet_expiry_display">Истекает: %1$s</string>
+    <string name="create_keystore_sheet_cat_cert">Данные сертификата</string>
+    <string name="create_keystore_sheet_cn">Полное имя (CN) *</string>
+    <string name="create_keystore_sheet_hint_cn">Полное имя или компания</string>
+    <string name="create_keystore_sheet_ou">Подразделение (OU)</string>
+    <string name="create_keystore_sheet_o">Организация (O)</string>
+    <string name="create_keystore_sheet_l">Город (L)</string>
+    <string name="create_keystore_sheet_st">Область / Край (ST)</string>
+    <string name="create_keystore_sheet_c">Код страны (2 буквы)</string>
+    <string name="create_keystore_sheet_hint_c">напр. RU</string>
+    <string name="create_keystore_sheet_btn_create">Создать</string>
+    <string name="create_keystore_sheet_btn_cancel">Отмена</string>
+    <string name="create_keystore_sheet_err_filename">Пожалуйста, введите корректное имя файла</string>
+    <string name="create_keystore_sheet_err_password_short">Пароль должен содержать не менее 6 символов</string>
+    <string name="create_keystore_sheet_err_password_match">Пароли не совпадают</string>
+    <string name="create_keystore_sheet_err_alias">Пожалуйста, введите корректный псевдоним ключа</string>
+    <string name="create_keystore_sheet_err_cn">Пожалуйста, введите имя или название организации</string>
+    <string name="create_keystore_sheet_err_country">Код страны должен состоять ровно из 2 букв (напр. RU, US)</string>
+    <string name="create_keystore_sheet_err_header">Ошибка генерации хранилища</string>
+    <string name="create_keystore_sheet_btn_copy_err">Копировать ошибку</string>
+    <string name="create_keystore_sheet_err_copied">Журнал ошибок скопирован в буфер</string>
+    <string name="create_keystore_sheet_generating">Генерация криптографических ключей...</string>
+    <string name="create_keystore_sheet_date_dialog_confirm">ОК</string>
+    <string name="create_keystore_sheet_date_dialog_dismiss">Отмена</string>
+    <string name="create_keystore_sheet_preset_25y">25 лет</string>
+    <string name="create_keystore_sheet_preset_30y">30 лет</string>
+    <string name="create_keystore_sheet_preset_50y">50 лет</string>
     <string name="keystore_sheet_title">Управление ключами</string>
-    <string name="keystore_sheet_subtitle">Выберите активный ключ или импортируйте сертификаты</string>
-    <string name="keystore_sheet_debug_meta">Встроенный • androiddebugkey • RSA 2048</string>
     <string name="keystore_sheet_btn_add">Импортировать файл Keystore</string>
-
     <string name="keystore_password_dialog_title">Импорт Keystore</string>
     <string name="keystore_password_dialog_path_label">Файл Keystore</string>
     <string name="keystore_password_dialog_password_label">Пароль от Keystore</string>
     <string name="keystore_password_dialog_custom_title_label">Название (Необязательно)</string>
     <string name="keystore_password_dialog_alias_label">Алиас ключа</string>
-    <string name="keystore_password_dialog_select_file">Выбрать файл</string>
     <string name="keystore_password_dialog_verify">Проверить Keystore</string>
     <string name="keystore_password_dialog_add">Добавить Keystore</string>
     <string name="keystore_password_dialog_invalid_pw">Не удалось загрузить Keystore. Проверьте пароль или формат.</string>
@@ -134,18 +164,15 @@
     <string name="keystore_password_dialog_error_label">Детали ошибки</string>
     <string name="keystore_password_dialog_copy_error">Копировать ошибку</string>
     <string name="keystore_password_dialog_error_copied">Текст ошибки скопирован в буфер обмена</string>
-
     <string name="error_logger_dialog_title">Журнал выполнения подписи</string>
     <string name="error_logger_dialog_copy">Копировать журнал</string>
     <string name="error_logger_dialog_dismiss">Закрыть</string>
     <string name="error_logger_dialog_copied">Журнал ошибок скопирован в буфер обмена</string>
-
     <string name="installer_helper_install_success">Установка успешно начата</string>
     <string name="installer_helper_install_error">Ошибка установки: %1$s</string>
     <string name="installer_helper_installing_split">Установка разделенного пакета приложения...</string>
     <string name="installer_helper_file_not_found">Файл не найден на накопителе устройства</string>
     <string name="installer_helper_permission_needed">Требуется разрешение на установку приложений</string>
-
     <string name="app_update_sheet_title">Доступно новое обновление</string>
     <string name="app_update_sheet_notes">Что нового</string>
     <string name="app_update_sheet_btn_later">Позже</string>

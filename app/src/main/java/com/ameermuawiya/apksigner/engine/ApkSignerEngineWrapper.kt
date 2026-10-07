@@ -182,7 +182,7 @@ class ApkSignerEngineWrapper(private val context: Context) {
                 val relativePath = apk.relativeTo(tempDir).path
                 val targetSigned = File(signedTempDir, relativePath)
                 targetSigned.parentFile?.mkdirs()
-                signSingleApk(apk, targetSigned, keyData, v1, v2, v3, v4)
+                signSingleApk(apk, targetSigned, keyData, v1, v2, v3, false)
             }
 
             tempDir.walkTopDown().filter { it.isFile && it.extension.lowercase(Locale.getDefault()) != "apk" }.forEach { otherFile ->

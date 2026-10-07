@@ -51,9 +51,11 @@ data class NavItem(
 /**
  * Main application navigation container managing tab switching and persistent screen states.
  */
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 fun NavContainer(viewModel: MainViewModel) {
     val selectedDetails by viewModel.selectedAppDetails.collectAsState()
+    val availableUpdate by viewModel.availableUpdate.collectAsState()
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
 
     val navItems = listOf(
@@ -123,6 +125,13 @@ fun NavContainer(viewModel: MainViewModel) {
                     onBack = { viewModel.clearSelectedTarget() }
                 )
             }
+        }
+
+        availableUpdate?.let { updateInfo ->
+            com.ameermuawiya.apksigner.ui.components.AppUpdateBottomSheet(
+                updateInfo = updateInfo,
+                onDismiss = { viewModel.dismissUpdateSheet() }
+            )
         }
     }
 }
